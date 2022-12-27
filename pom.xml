@@ -56,7 +56,7 @@
         <jboss.as.version>7.2.0.Final</jboss.as.version>
         <jboss.as.subsystem.test.version>7.5.22.Final-redhat-1</jboss.as.subsystem.test.version>
 
-        <keycloak.admin-ui.version>${project.version}</keycloak.admin-ui.version>
+        <keycloak.admin-ui.version>20.0.2</keycloak.admin-ui.version>
 
         <!-- Versions used mostly for Undertow server, aligned with WildFly -->
         <jboss.aesh.version>0.66.19</jboss.aesh.version>
@@ -235,13 +235,7 @@
         <url>https://github.com/keycloak/keycloak/tree/master/</url>
     </scm>
 
-    <distributionManagement>
-        <repository>
-            <id>${jboss.releases.repo.id}</id>
-            <name>JBoss Releases Repository</name>
-            <url>${jboss.releases.repo.url}</url>
-        </repository>
-    </distributionManagement>
+
 
     <issueManagement>
         <system>JIRA</system>
@@ -1728,6 +1722,7 @@
     <build>
         <pluginManagement>
             <plugins>
+                <!--
                 <plugin>
                     <groupId>org.sonatype.plugins</groupId>
                     <artifactId>nexus-staging-maven-plugin</artifactId>
@@ -1738,6 +1733,7 @@
                         <nexusUrl>${jboss.repo.nexusUrl}</nexusUrl>
                     </configuration>
                 </plugin>
+                -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-assembly-plugin</artifactId>

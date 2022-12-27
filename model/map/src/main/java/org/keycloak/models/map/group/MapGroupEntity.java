@@ -18,11 +18,13 @@
 package org.keycloak.models.map.group;
 
 import org.keycloak.models.map.annotations.GenerateEntityImplementations;
+import org.keycloak.models.map.annotations.IgnoreForEntityImplementationGenerator;
 import org.keycloak.models.map.common.AbstractEntity;
 import org.keycloak.models.map.common.DeepCloner;
 import org.keycloak.models.map.common.EntityWithAttributes;
 import org.keycloak.models.map.common.UpdatableEntity;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @GenerateEntityImplementations(
@@ -62,4 +64,10 @@ public interface MapGroupEntity extends UpdatableEntity, AbstractEntity, EntityW
     void setGrantedRoles(Set<String> grantedRoles);
     void addGrantedRole(String role);
     void removeGrantedRole(String role);
+
+    Set<MapGroupEntity> getChildGroupsReference();
+    void setChildGroupsReference(Set<MapGroupEntity> childGroupsReference);
+    Set<MapGroupEntity> getParentGroupsReference();
+    void setParentGroupsReference(Set<MapGroupEntity> parentGroupsReference);
+
 }

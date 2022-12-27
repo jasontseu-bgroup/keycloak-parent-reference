@@ -316,13 +316,19 @@ public class GroupLDAPStorageMapper extends AbstractLDAPStorageMapper implements
         if (kcGroup != null) {
             logger.debugf("Updated Keycloak group '%s' from LDAP", kcGroup.getName());
             updateAttributesOfKCGroup(kcGroup, ldapGroups.get(kcGroup.getName()));
+            Set<GroupModel> parents = kcGroup.getParentGroupsReference();
+            if (kcParent != null && !parents.contains(kcParent)) {
+                kcGroup.setParentGroupReference(kcParent);
+            }
             syncResult.increaseUpdated();
         } else {
             kcGroup = createKcGroup(realm, groupTreeEntry.getGroupName(), kcParent);
-            if (kcGroup.getParent() == null) {
+
+            if (kcGroup.getParentGroupsReference().isEmpty()) {
                 logger.debugf("Imported top-level group '%s' from LDAP", kcGroup.getName());
             } else {
-                logger.debugf("Imported group '%s' from LDAP as child of group '%s'", kcGroup.getName(), kcGroup.getParent().getName());
+                GroupModel kcGroupParent = kcGroup.getParentGroupsReference().stream().findAny().orElse(null);
+                logger.debugf("Imported group '%s' from LDAP as child of group '%s'", kcGroup.getName(), kcGroupParent == null ? kcGroupParent: kcGroupParent.getName());
             }
 
             updateAttributesOfKCGroup(kcGroup, ldapGroups.get(kcGroup.getName()));

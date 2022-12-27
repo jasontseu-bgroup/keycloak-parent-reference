@@ -37,6 +37,7 @@ import org.keycloak.models.utils.KeycloakModelUtils;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
@@ -63,6 +64,22 @@ public class MapGroupProvider implements GroupProvider {
     private Function<MapGroupEntity, GroupModel> entityToAdapterFunc(RealmModel realm) {
         // Clone entity before returning back, to avoid giving away a reference to the live object to the caller
         return origEntity -> new MapGroupAdapter(session, realm, origEntity) {
+
+            @Override
+            public Set<GroupModel> getParentGroupsReference() {
+                return null;
+            }
+
+            @Override
+            public void setParentGroupReference(GroupModel parent) {
+
+            }
+
+            @Override
+            public void setParentGroupsReference(Set<GroupModel> parent) {
+
+            }
+
             @Override
             public Stream<GroupModel> getSubGroupsStream() {
                 return getGroupsByParentId(realm, this.getId());

@@ -106,7 +106,13 @@ public class RoleUtils {
 
         if (checkParentGroup) {
             GroupModel parent = group.getParent();
-            return parent != null && hasRoleFromGroup(parent, targetRole, true);
+            boolean result = parent != null && hasRoleFromGroup(parent, targetRole, true);
+            if (result) {
+                return result;
+            } else {
+                Set<GroupModel> parentGroupsReference = group.getParentGroupsReference();
+                return parentGroupsReference.size() > 0 && hasRoleFromGroup(parentGroupsReference.stream(), targetRole, true);
+            }
         }
 
         return false;

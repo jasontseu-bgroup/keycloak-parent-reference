@@ -31,7 +31,7 @@ import java.util.stream.Stream;
  * @author <a href="mailto:bill@burkecentral.com">Bill Burke</a>
  * @version $Revision: 1 $
  */
-public interface GroupModel extends RoleMapperModel {
+public interface GroupModel extends ComplexGroupModel, RoleMapperModel {
 
     public static class SearchableFields {
         public static final SearchableModelField<GroupModel> ID             = new SearchableModelField<>("id", String.class);
@@ -138,4 +138,10 @@ public interface GroupModel extends RoleMapperModel {
     @Deprecated
     interface Streams extends GroupModel, RoleMapperModel {
     }
+
+    Set<GroupModel> getParentGroupsReference();
+
+    void setParentGroupReference(GroupModel parent);
+
+    void setParentGroupsReference(Set<GroupModel> parent);
 }

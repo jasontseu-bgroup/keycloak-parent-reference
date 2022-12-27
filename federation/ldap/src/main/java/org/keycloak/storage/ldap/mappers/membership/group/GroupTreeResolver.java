@@ -59,7 +59,7 @@ public class GroupTreeResolver {
             if (parentCount == 0) {
                 rootGroups.add(group.getKey());
             } else if (parentCount > 1) {
-                throw new GroupTreeResolveException("Group '" + group.getKey() + "' detected to have multiple parents. This is not allowed in Keycloak. Parents are: " + group.getValue());
+//              throw new GroupTreeResolveException("Group '" + group.getKey() + "' detected to have multiple parents. This is not allowed in Keycloak. Parents are: " + group.getValue());
             }
         }
 

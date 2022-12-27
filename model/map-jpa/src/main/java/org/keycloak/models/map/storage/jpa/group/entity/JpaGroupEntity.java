@@ -25,21 +25,15 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
-import javax.persistence.Version;
+import javax.persistence.*;
+
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 import org.keycloak.models.map.common.DeepCloner;
 import org.keycloak.models.map.common.UuidValidator;
+import org.keycloak.models.map.group.MapGroupEntity;
 import org.keycloak.models.map.group.MapGroupEntity.AbstractGroupEntity;
 import static org.keycloak.models.map.storage.jpa.Constants.CURRENT_SCHEMA_VERSION_GROUP;
 import org.keycloak.models.map.storage.jpa.JpaRootVersionedEntity;
@@ -83,6 +77,18 @@ public class JpaGroupEntity extends AbstractGroupEntity implements JpaRootVersio
     @Column(insertable = false, updatable = false)
     @Basic(fetch = FetchType.LAZY)
     private String parentId;
+
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {})
+    @JoinTable(name = "kc_group_group",
+            joinColumns = @JoinColumn(name = "parent_group", referencedColumnName = "ID"),
+            inverseJoinColumns = @JoinColumn(name = "child_group", referencedColumnName = "ID"))
+    @BatchSize(size=100)
+    private Set<MapGroupEntity> childGroupsReference;
+
+    @BatchSize(size=100)
+    @ManyToMany(mappedBy="childGroupsReference")
+    private Set<MapGroupEntity> parentGroupsReference;
 
     @OneToMany(mappedBy = "root", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private final Set<JpaGroupAttributeEntity> attributes = new HashSet<>();
@@ -243,6 +249,28 @@ public class JpaGroupEntity extends AbstractGroupEntity implements JpaRootVersio
     @Override
     public void removeAttribute(String name) {
         attributes.removeIf(attr -> Objects.equals(attr.getName(), name));
+    }
+
+    public Set<MapGroupEntity> getChildGroupsReference() {
+        if (childGroupsReference == null) {
+            childGroupsReference = new HashSet<>();
+        }
+        return childGroupsReference;
+    }
+
+    public void setChildGroupsReference(Set<MapGroupEntity> childGroupsReference) {
+        this.childGroupsReference = childGroupsReference;
+    }
+
+    public Set<MapGroupEntity> getParentGroupsReference() {
+        if (parentGroupsReference == null) {
+            parentGroupsReference = new HashSet<>();
+        }
+        return parentGroupsReference;
+    }
+    
+    public void setParentGroupsReference(Set<MapGroupEntity> parentGroupsReference) {
+        this.parentGroupsReference = parentGroupsReference;
     }
 
     @Override

@@ -17,11 +17,7 @@
 
 package org.keycloak.models.cache.infinispan;
 
-import org.keycloak.models.ClientModel;
-import org.keycloak.models.GroupModel;
-import org.keycloak.models.KeycloakSession;
-import org.keycloak.models.RealmModel;
-import org.keycloak.models.RoleModel;
+import org.keycloak.models.*;
 import org.keycloak.models.cache.infinispan.entities.CachedGroup;
 import org.keycloak.models.utils.RoleUtils;
 
@@ -259,5 +255,20 @@ public class GroupAdapter implements GroupModel {
 
     private GroupModel getGroupModel() {
         return cacheSession.getGroupDelegate().getGroupById(realm, cached.getId());
+    }
+
+    @Override
+    public Set<GroupModel> getParentGroupsReference() {
+        return null;
+    }
+
+    @Override
+    public void setParentGroupReference(GroupModel parent) {
+
+    }
+
+    @Override
+    public void setParentGroupsReference(Set<GroupModel> parent) {
+
     }
 }

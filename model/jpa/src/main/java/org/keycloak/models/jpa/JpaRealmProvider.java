@@ -45,22 +45,8 @@ import org.jboss.logging.Logger;
 import org.keycloak.common.util.Time;
 import org.keycloak.connections.jpa.util.JpaUtils;
 import org.keycloak.migration.MigrationModel;
-import org.keycloak.models.ClientModel;
-import org.keycloak.models.ClientProvider;
-import org.keycloak.models.ClientScopeModel;
-import org.keycloak.models.ClientScopeProvider;
-import org.keycloak.models.DeploymentStateProvider;
-import org.keycloak.models.GroupModel;
-import org.keycloak.models.GroupProvider;
-import org.keycloak.models.KeycloakSession;
-import org.keycloak.models.ModelDuplicateException;
-import org.keycloak.models.ModelException;
-import org.keycloak.models.RealmModel;
-import org.keycloak.models.RealmProvider;
-import org.keycloak.models.RoleContainerModel;
+import org.keycloak.models.*;
 import org.keycloak.models.RoleContainerModel.RoleRemovedEvent;
-import org.keycloak.models.RoleModel;
-import org.keycloak.models.RoleProvider;
 import org.keycloak.models.delegate.ClientModelLazyDelegate;
 import org.keycloak.models.jpa.entities.ClientAttributeEntity;
 import org.keycloak.models.jpa.entities.ClientEntity;
@@ -78,7 +64,7 @@ import org.keycloak.models.utils.KeycloakModelUtils;
  * @author <a href="mailto:bill@burkecentral.com">Bill Burke</a>
  * @version $Revision: 1 $
  */
-public class JpaRealmProvider implements RealmProvider, ClientProvider, ClientScopeProvider, GroupProvider, RoleProvider, DeploymentStateProvider {
+public class JpaRealmProvider implements RealmProvider, ClientProvider, ClientScopeProvider, ComplexGroupProvider, GroupProvider, RoleProvider, DeploymentStateProvider {
     protected static final Logger logger = Logger.getLogger(JpaRealmProvider.class);
     private final KeycloakSession session;
     protected EntityManager em;
