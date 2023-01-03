@@ -129,7 +129,7 @@ public class GroupTreeResolver {
     }
 
     private GroupTreeEntry resolveGroupTree(String groupName, Map<String, Group> asMap, Set<String> visitedGroups, List<String> currentSubtree) throws GroupTreeResolveException {
-        if (visitedGroups.contains(groupName)) {
+        if (recursionDetected(groupName, groupName, asMap)) {
             throw new GroupTreeResolveException("Recursion detected when trying to resolve group '" + groupName + "'. Whole recursion path: " + currentSubtree);
         }
 
@@ -150,7 +150,24 @@ public class GroupTreeResolver {
         return result;
     }
 
+    private boolean recursionDetected(String rootGroupName, String groupName, Map<String, Group> asMap) {
+        Group group = asMap.get(groupName);
 
+        for (String childGroupName : group.getChildrenNames()) {
+            if (childGroupName.equals(rootGroupName)) {
+                return true;
+            } else {
+                Group childGroup = asMap.get(childGroupName);
+                if (childGroup.getChildrenNames().isEmpty()) {
+                    continue;
+                } else {
+                    return recursionDetected(rootGroupName, childGroupName, asMap);
+                }
+            }
+        }
+
+        return false;
+    }
 
     // static classes
 
