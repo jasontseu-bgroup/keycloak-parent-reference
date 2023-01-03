@@ -89,7 +89,7 @@ public class GroupTreeResolverTest {
     }
 
     @Test
-    public void testGroupResolvingMultipleParents() throws GroupTreeResolveException {
+    public void testGroupResolvingMultipleParents() throws GroupTreeResolver.GroupTreeResolveException {
         GroupTreeResolver.Group group1 = new GroupTreeResolver.Group("group1", "group2");
         GroupTreeResolver.Group group2 = new GroupTreeResolver.Group("group2");
         GroupTreeResolver.Group group3 = new GroupTreeResolver.Group("group3", "group2");
