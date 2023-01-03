@@ -100,12 +100,7 @@ public abstract class AbstractGenerateEntityImplementationsProcessor extends Abs
             } catch (Exception ex) {
                 processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Could not generate implementation for class: " + ex, e);
 
-                StringBuilder result = new StringBuilder("Throwable stack trace:");
-                for (StackTraceElement element : ex.getStackTrace()) {
-                    result.append(element);
-                    result.append(System.getProperty("line.separator"));
-                }
-                processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Stack trace: " + result.toString(), e);
+
             }
         }
 
