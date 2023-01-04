@@ -111,7 +111,9 @@ public class RoleUtils {
                 return result;
             } else {
                 Set<GroupModel> parentGroupsReference = group.getParentGroupsReference();
-                return parentGroupsReference.size() > 0 && hasRoleFromGroup(parentGroupsReference.stream(), targetRole, true);
+                if (parentGroupsReference != null) {
+                    return parentGroupsReference.size() > 0 && hasRoleFromGroup(parentGroupsReference.stream(), targetRole, true);
+                }
             }
         }
 
