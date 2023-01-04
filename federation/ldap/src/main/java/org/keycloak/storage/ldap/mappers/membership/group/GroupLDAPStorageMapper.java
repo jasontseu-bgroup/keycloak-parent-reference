@@ -316,17 +316,12 @@ public class GroupLDAPStorageMapper extends AbstractLDAPStorageMapper implements
         if (kcGroup != null) {
             logger.debugf("Updated Keycloak group '%s' from LDAP", kcGroup.getName());
             updateAttributesOfKCGroup(kcGroup, ldapGroups.get(kcGroup.getName()));
-            Set<GroupModel> parents = kcGroup.getParentGroupsReference();
-            if (kcParent != null && (parents == null || !parents.contains(kcParent))) {
-                kcGroup.setParentGroupReference(kcParent);
-            }
+
+            AddParentGroupReferenceIfNotExist(kcGroup, kcParent);
             syncResult.increaseUpdated();
         } else {
             kcGroup = createKcGroup(realm, groupTreeEntry.getGroupName(), null);
-            Set<GroupModel> parents = kcGroup.getParentGroupsReference();
-            if (kcParent != null && (parents == null || !parents.contains(kcParent))) {
-                kcGroup.setParentGroupReference(kcParent);
-            }
+            AddParentGroupReferenceIfNotExist(kcGroup, kcParent);
             if (kcGroup.getParent() == null) {
                 logger.debugf("Imported top-level group '%s' from LDAP", kcGroup.getName());
             } else {
@@ -340,6 +335,17 @@ public class GroupLDAPStorageMapper extends AbstractLDAPStorageMapper implements
 
         for (GroupTreeResolver.GroupTreeEntry childEntry : groupTreeEntry.getChildren()) {
             updateKeycloakGroupTreeEntry(realm, childEntry, ldapGroups, kcGroup, syncResult, visitedGroupIds);
+        }
+    }
+
+    private void AddParentGroupReferenceIfNotExist(GroupModel kcGroup, GroupModel kcParent) {
+        Set<GroupModel> parents = kcGroup.getParentGroupsReference();
+        if (kcParent != null) {
+            if (parents != null && !parents.contains(kcParent)) {
+                kcGroup.setParentGroupReference(kcParent);
+            } else {
+                kcGroup.setParentGroupReference(kcParent);
+            }
         }
     }
 
