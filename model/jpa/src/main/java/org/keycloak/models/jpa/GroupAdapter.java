@@ -266,7 +266,7 @@ public class GroupAdapter implements GroupModel, JpaModel<GroupEntity> {
     }
 
     public Set<GroupModel> getParentGroupsReference() {
-        TypedQuery<String> query = em.createNamedQuery("getGroupIdsByChild", String.class);
+        TypedQuery<String> query = em.createNamedQuery("getGroupIdsByChildReference", String.class);
         query.setParameter("child", group.getId());
         return query.getResultStream().map(realm::getGroupById).filter(Objects::nonNull).collect(Collectors.toSet());
     }
