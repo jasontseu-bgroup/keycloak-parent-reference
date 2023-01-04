@@ -317,20 +317,21 @@ public class GroupLDAPStorageMapper extends AbstractLDAPStorageMapper implements
             logger.debugf("Updated Keycloak group '%s' from LDAP", kcGroup.getName());
             updateAttributesOfKCGroup(kcGroup, ldapGroups.get(kcGroup.getName()));
             Set<GroupModel> parents = kcGroup.getParentGroupsReference();
-            if (kcParent != null && !parents.contains(kcParent)) {
+            if (kcParent != null && (parents == null || !parents.contains(kcParent))) {
                 kcGroup.setParentGroupReference(kcParent);
             }
             syncResult.increaseUpdated();
         } else {
-            kcGroup = createKcGroup(realm, groupTreeEntry.getGroupName(), kcParent);
-
-            if (kcGroup.getParentGroupsReference().isEmpty()) {
+            kcGroup = createKcGroup(realm, groupTreeEntry.getGroupName(), null);
+            Set<GroupModel> parents = kcGroup.getParentGroupsReference();
+            if (kcParent != null && (parents == null || !parents.contains(kcParent))) {
+                kcGroup.setParentGroupReference(kcParent);
+            }
+            if (kcGroup.getParent() == null) {
                 logger.debugf("Imported top-level group '%s' from LDAP", kcGroup.getName());
             } else {
-                GroupModel kcGroupParent = kcGroup.getParentGroupsReference().stream().findAny().orElse(null);
-                logger.debugf("Imported group '%s' from LDAP as child of group '%s'", kcGroup.getName(), kcGroupParent == null ? kcGroupParent: kcGroupParent.getName());
+                logger.debugf("Imported group '%s' from LDAP as child of group '%s'", kcGroup.getName(), kcGroup.getParent().getName());
             }
-
             updateAttributesOfKCGroup(kcGroup, ldapGroups.get(kcGroup.getName()));
             syncResult.increaseAdded();
         }
