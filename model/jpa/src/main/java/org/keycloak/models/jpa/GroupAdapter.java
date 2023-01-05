@@ -265,6 +265,12 @@ public class GroupAdapter implements GroupModel, JpaModel<GroupEntity> {
         return getRoleMappingsStream().filter(r -> RoleUtils.isClientRole(r, app));
     }
 
+    public Set<GroupModel> getChildGroupsReference() {
+        TypedQuery<String> query = em.createNamedQuery("getGroupIdsByParentReference", String.class);
+        query.setParameter("parent", group.getId());
+        return query.getResultStream().map(realm::getGroupById).filter(Objects::nonNull).collect(Collectors.toSet());
+    }
+
     public Set<GroupModel> getParentGroupsReference() {
         TypedQuery<String> query = em.createNamedQuery("getGroupIdsByChildReference", String.class);
         query.setParameter("child", group.getId());

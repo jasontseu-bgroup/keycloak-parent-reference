@@ -31,6 +31,7 @@ import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
+import org.keycloak.models.map.common.AbstractEntity;
 import org.keycloak.models.map.common.DeepCloner;
 import org.keycloak.models.map.common.UuidValidator;
 import org.keycloak.models.map.group.MapGroupEntity;
@@ -80,15 +81,15 @@ public class JpaGroupEntity extends AbstractGroupEntity implements JpaRootVersio
 
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = {})
-    @JoinTable(name = "kc_group_group",
+    @JoinTable(name = "kc_group_reference",
             joinColumns = @JoinColumn(name = "parent_group", referencedColumnName = "ID"),
             inverseJoinColumns = @JoinColumn(name = "child_group", referencedColumnName = "ID"))
     @BatchSize(size=100)
-    private Set<MapGroupEntity> childGroupsReference;
+    private Set<JpaGroupEntity> childGroupsReference;
 
     @BatchSize(size=100)
     @ManyToMany(mappedBy="childGroupsReference")
-    private Set<MapGroupEntity> parentGroupsReference;
+    private Set<JpaGroupEntity> parentGroupsReference;
 
     @OneToMany(mappedBy = "root", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private final Set<JpaGroupAttributeEntity> attributes = new HashSet<>();
@@ -255,22 +256,22 @@ public class JpaGroupEntity extends AbstractGroupEntity implements JpaRootVersio
         if (childGroupsReference == null) {
             childGroupsReference = new HashSet<>();
         }
-        return childGroupsReference;
+        return childGroupsReference.stream().map(e -> (MapGroupEntity)e).collect(Collectors.toSet());
     }
 
     public void setChildGroupsReference(Set<MapGroupEntity> childGroupsReference) {
-        this.childGroupsReference = childGroupsReference;
+        this.childGroupsReference = childGroupsReference.stream().map(e -> (JpaGroupEntity)e).collect(Collectors.toSet());
     }
 
     public Set<MapGroupEntity> getParentGroupsReference() {
         if (parentGroupsReference == null) {
             parentGroupsReference = new HashSet<>();
         }
-        return parentGroupsReference;
+        return parentGroupsReference.stream().map(e -> (MapGroupEntity)e).collect(Collectors.toSet());
     }
     
     public void setParentGroupsReference(Set<MapGroupEntity> parentGroupsReference) {
-        this.parentGroupsReference = parentGroupsReference;
+        this.parentGroupsReference = parentGroupsReference.stream().map(e -> (JpaGroupEntity)e).collect(Collectors.toSet());
     }
 
     @Override

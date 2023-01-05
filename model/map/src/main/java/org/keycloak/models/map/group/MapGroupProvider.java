@@ -35,11 +35,13 @@ import org.keycloak.models.map.storage.QueryParameters;
 import org.keycloak.models.map.storage.criteria.DefaultModelCriteria;
 import org.keycloak.models.utils.KeycloakModelUtils;
 
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.keycloak.common.util.StackUtil.getShortStackTrace;
@@ -64,25 +66,25 @@ public class MapGroupProvider implements GroupProvider {
     private Function<MapGroupEntity, GroupModel> entityToAdapterFunc(RealmModel realm) {
         // Clone entity before returning back, to avoid giving away a reference to the live object to the caller
         return origEntity -> new MapGroupAdapter(session, realm, origEntity) {
-
             @Override
-            public Set<GroupModel> getParentGroupsReference() {
-                return null;
+            public Stream<GroupModel> getSubGroupsStream() {
+                return getGroupsByParentId(realm, this.getId());
             }
 
             @Override
             public void setParentGroupReference(GroupModel parent) {
-
+                Set<MapGroupEntity> parentGroupsReferenceEntity = entity.getParentGroupsReference();
+                if (parentGroupsReferenceEntity == null) {
+                    parentGroupsReferenceEntity = new HashSet<>();
+                }
+                MapGroupEntity entity = tx.read(parent.getId());
+                parentGroupsReferenceEntity.add(entity);
+                entity.setParentGroupsReference(parentGroupsReferenceEntity);
             }
 
             @Override
-            public void setParentGroupsReference(Set<GroupModel> parent) {
-
-            }
-
-            @Override
-            public Stream<GroupModel> getSubGroupsStream() {
-                return getGroupsByParentId(realm, this.getId());
+            public void setParentGroupsReference(Set<GroupModel> parents) {
+                entity.setParentGroupsReference(parents.stream().map(p -> tx.read(p.getId())).collect(Collectors.toSet()));
             }
         };
     }

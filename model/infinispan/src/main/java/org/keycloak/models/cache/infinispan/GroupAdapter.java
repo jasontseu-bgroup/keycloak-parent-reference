@@ -259,16 +259,47 @@ public class GroupAdapter implements GroupModel {
 
     @Override
     public Set<GroupModel> getParentGroupsReference() {
-        return null;
+        if (isUpdated()) return updated.getParentGroupsReference();
+        Set<GroupModel> parentGroupsReference = new HashSet<>();
+        for (String id : cached.getParentGroupsReference(modelSupplier)) {
+            GroupModel parentGroupReference = keycloakSession.groups().getGroupById(realm, id);
+            if (parentGroupReference == null) {
+                // chance that role was removed, so just delegate to persistence and get user invalidated
+                getDelegateForUpdate();
+                return updated.getParentGroupsReference();
+
+            }
+            parentGroupsReference.add(parentGroupReference);
+        }
+        return parentGroupsReference;
+    }
+
+    @Override
+    public Set<GroupModel> getChildGroupsReference() {
+        if (isUpdated()) return updated.getChildGroupsReference();
+        Set<GroupModel> childGroupsReference = new HashSet<>();
+        for (String id : cached.getChildGroupsReference(modelSupplier)) {
+            GroupModel childGroupReference = keycloakSession.groups().getGroupById(realm, id);
+            if (childGroupReference == null) {
+                // chance that role was removed, so just delegate to persistence and get user invalidated
+                getDelegateForUpdate();
+                return updated.getChildGroupsReference();
+
+            }
+            childGroupsReference.add(childGroupReference);
+        }
+        return childGroupsReference;
     }
 
     @Override
     public void setParentGroupReference(GroupModel parent) {
-
+        getDelegateForUpdate();
+        updated.setParentGroupReference(parent);
     }
 
     @Override
-    public void setParentGroupsReference(Set<GroupModel> parent) {
-
+    public void setParentGroupsReference(Set<GroupModel> parents) {
+        getDelegateForUpdate();
+        updated.setParentGroupsReference(parents);
     }
 }

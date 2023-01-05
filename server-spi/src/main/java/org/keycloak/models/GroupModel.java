@@ -141,6 +141,8 @@ public interface GroupModel extends ComplexGroupModel, RoleMapperModel {
 
     Set<GroupModel> getParentGroupsReference();
 
+    Set<GroupModel> getChildGroupsReference();
+
     void setParentGroupReference(GroupModel parent);
 
     void setParentGroupsReference(Set<GroupModel> parent);
