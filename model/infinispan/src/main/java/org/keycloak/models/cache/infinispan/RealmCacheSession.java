@@ -1080,6 +1080,24 @@ public class RealmCacheSession implements CacheRealmProvider {
 
     }
 
+    @Override
+    public void addParentGroupReference(RealmModel realm, GroupModel group, GroupModel toParent) {
+        invalidateGroup(group.getId(), realm.getId(), true);
+        if (toParent != null) invalidateGroup(toParent.getId(), realm.getId(), false); // Queries already invalidated
+        listInvalidations.add(realm.getId());
+
+        getGroupDelegate().addParentGroupReference(realm, group, toParent);
+    }
+
+    @Override
+    public void removeParentGroupReference(RealmModel realm, GroupModel group, GroupModel toParent) {
+        invalidateGroup(group.getId(), realm.getId(), true);
+        if (toParent != null) invalidateGroup(toParent.getId(), realm.getId(), false); // Queries already invalidated
+        listInvalidations.add(realm.getId());
+
+        getGroupDelegate().removeParentGroupReference(realm, group, toParent);
+    }
+
     private void addGroupEventIfAbsent(InvalidationEvent eventToAdd) {
         String groupId = eventToAdd.getId();
 

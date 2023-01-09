@@ -25,6 +25,7 @@ import org.keycloak.events.admin.OperationType;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.RealmModel;
 import org.keycloak.services.ServicesLogger;
+import org.keycloak.storage.ldap.mappers.LDAPStorageSyncMapper;
 import org.keycloak.storage.managers.UserStorageSyncManager;
 import org.keycloak.services.resources.admin.permissions.AdminPermissionEvaluator;
 import org.keycloak.storage.UserStorageProvider;
@@ -229,7 +230,7 @@ public class UserStorageProviderResource {
         */
 
         UserStorageProvider userStorageProvider = session.getProvider(UserStorageProvider.class, parentModel);
-        LDAPStorageMapper mapper = (LDAPStorageMapper)session.getProvider((Class)Class.forName(mapperModel.getProviderType()), mapperModel);
+        LDAPStorageSyncMapper mapper = (LDAPStorageSyncMapper)session.getProvider((Class)Class.forName(mapperModel.getProviderType()), mapperModel);
 
         ServicesLogger.LOGGER.syncingDataForMapper(mapperModel.getName(), mapperModel.getProviderId(), direction);
 

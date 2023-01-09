@@ -647,6 +647,39 @@ public class JpaRealmProvider implements RealmProvider, ClientProvider, ClientSc
         subGroup.setParent(null);
     }
 
+    @Override
+    public void addParentGroupReference(RealmModel realm, GroupModel group, GroupModel toParent) {
+        if (toParent != null && group.getId().equals(toParent.getId())) {
+            return;
+        }
+
+        if (toParent != null) {
+            GroupEntity parent = GroupAdapter.toEntity(toParent, em);
+            GroupEntity child = GroupAdapter.toEntity(group, em);
+
+            parent.getChildGroupsReference().add(child);
+            child.getParentGroupsReference().add(parent);
+        }
+
+        em.flush();
+    }
+
+    @Override
+    public void removeParentGroupReference(RealmModel realm, GroupModel group, GroupModel toParent) {
+        if (toParent != null && group.getId().equals(toParent.getId())) {
+            return;
+        }
+
+        if (toParent != null) {
+            GroupEntity parent = GroupAdapter.toEntity(toParent, em);
+            GroupEntity child = GroupAdapter.toEntity(group, em);
+
+            parent.getChildGroupsReference().remove(child);
+            child.getParentGroupsReference().remove(parent);
+        }
+        em.flush();
+    }
+
     public void preRemove(RealmModel realm, RoleModel role) {
         // GroupProvider method implementation starts here
         em.createNamedQuery("deleteGroupRoleMappingsByRole").setParameter("roleId", role.getId()).executeUpdate();

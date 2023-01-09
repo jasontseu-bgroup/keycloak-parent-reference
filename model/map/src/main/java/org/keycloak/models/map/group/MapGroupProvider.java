@@ -345,6 +345,16 @@ public class MapGroupProvider implements GroupProvider {
         subGroup.setParent(null);
     }
 
+    @Override
+    public void addParentGroupReference(RealmModel realm, GroupModel group, GroupModel toParent) {
+
+    }
+
+    @Override
+    public void removeParentGroupReference(RealmModel realm, GroupModel group, GroupModel toParent) {
+
+    }
+
     public void preRemove(RealmModel realm, RoleModel role) {
         LOG.tracef("preRemove(%s, %s)%s", realm, role, getShortStackTrace());
         DefaultModelCriteria<GroupModel> mcb = criteria();

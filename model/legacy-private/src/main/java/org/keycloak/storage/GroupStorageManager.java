@@ -138,6 +138,16 @@ public class GroupStorageManager extends AbstractStorageManager<GroupStorageProv
     }
 
     @Override
+    public void addParentGroupReference(RealmModel realm, GroupModel group, GroupModel toParent) {
+        localStorage().addParentGroupReference(realm, group, toParent);
+    }
+
+    @Override
+    public void removeParentGroupReference(RealmModel realm, GroupModel group, GroupModel toParent) {
+        localStorage().removeParentGroupReference(realm, group, toParent);
+    }
+
+    @Override
     public void close() {
 
     }
