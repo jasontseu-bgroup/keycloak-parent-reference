@@ -277,7 +277,7 @@ jobs:
   test-fips:
     name: Base testsuite (fips)
     needs: build
-    runs-on: [self-hosted, Linux, X64, VidiConfig]
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         server: ['bcfips-nonapproved-pkcs12']
@@ -349,7 +349,7 @@ jobs:
   test-posgres:
     name: Base testsuite (postgres)
     needs: build
-    runs-on: [self-hosted, Linux, X64, VidiConfig]
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         server: ['undertow-map-jpa']
@@ -447,7 +447,7 @@ jobs:
   quarkus-test-cluster:
     name: Quarkus Test Clustering
     needs: build
-    runs-on: [self-hosted, Linux, X64, VidiConfig]
+    runs-on: ubuntu-latest
     env:
       MAVEN_OPTS: -Xmx1024m
     steps:
@@ -507,7 +507,7 @@ jobs:
   quarkus-tests:
     name: Quarkus Tests
     needs: build
-    runs-on: [self-hosted, Linux, X64, VidiConfig]
+    runs-on: ubuntu-latest
     env:
       MAVEN_OPTS: -Xmx1024m
     steps:
@@ -575,7 +575,7 @@ jobs:
 #  webauthn-test:
 #    name: WebAuthn Tests
 #    needs: build
-#    runs-on: [self-hosted, Linux, X64, VidiConfig]
+#    runs-on: ubuntu-latest
 #    steps:
 #      - uses: actions/checkout@v2
 #        with:
