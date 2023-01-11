@@ -302,4 +302,10 @@ public class GroupAdapter implements GroupModel {
         getDelegateForUpdate();
         updated.setParentGroupsReference(parents);
     }
+
+    @Override
+    public void setChildGroupsReference(Set<GroupModel> parents) {
+        getDelegateForUpdate();
+        updated.setParentGroupsReference(parents);
+    }
 }

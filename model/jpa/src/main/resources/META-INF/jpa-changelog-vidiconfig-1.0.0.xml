@@ -42,14 +42,16 @@
       baseColumnNames="PARENT_GROUP"
       constraintName="FK_keycloak_group_group_parent_group"
       referencedTableName="KEYCLOAK_GROUP"
-      referencedColumnNames="id"/>
+      referencedColumnNames="id"
+      onDelete="CASCADE"/>
 
     <addForeignKeyConstraint
       baseTableName="KEYCLOAK_GROUP_GROUP"
       baseColumnNames="CHILD_GROUP"
       constraintName="FK_keycloak_group_group_child_group"
       referencedTableName="KEYCLOAK_GROUP"
-      referencedColumnNames="id"/>
+      referencedColumnNames="id"
+      onDelete="CASCADE"/>
   </changeSet>
 
   <changeSet author="vidiconfig" id="vidiconfig-1.0.0-4">

@@ -205,6 +205,13 @@ public class RoleUtils {
 
     private static void addGroupRoles(GroupModel group, Set<RoleModel> roleMappings) {
         roleMappings.addAll(group.getRoleMappingsStream().collect(Collectors.toSet()));
+
+        if (group.getParentGroupsReference() != null) {
+            group.getParentGroupsReference().forEach(p -> {
+                addGroupRoles(p, roleMappings);
+            });
+        }
+
         if (group.getParentId() == null) return;
         addGroupRoles(group.getParent(), roleMappings);
     }

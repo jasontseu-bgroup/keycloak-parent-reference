@@ -86,6 +86,11 @@ public class MapGroupProvider implements GroupProvider {
             public void setParentGroupsReference(Set<GroupModel> parents) {
                 entity.setParentGroupsReference(parents.stream().map(p -> tx.read(p.getId())).collect(Collectors.toSet()));
             }
+
+            @Override
+            public void setChildGroupsReference(Set<GroupModel> children) {
+                entity.setChildGroupsReference(children.stream().map(p -> tx.read(p.getId())).collect(Collectors.toSet()));
+            }
         };
     }
 

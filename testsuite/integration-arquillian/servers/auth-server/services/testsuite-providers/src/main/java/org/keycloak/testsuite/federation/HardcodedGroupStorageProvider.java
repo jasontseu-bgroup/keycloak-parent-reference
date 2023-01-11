@@ -215,5 +215,7 @@ public class HardcodedGroupStorageProvider implements GroupStorageProvider {
         @Override
         public void setParentGroupsReference(Set<GroupModel> parent) { throw new ReadOnlyException("group is read only"); }
 
+        @Override
+        public void setChildGroupsReference(Set<GroupModel> parent) { throw new ReadOnlyException("group is read only"); }
     }
 }

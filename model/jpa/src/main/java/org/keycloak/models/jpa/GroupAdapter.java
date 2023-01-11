@@ -283,15 +283,39 @@ public class GroupAdapter implements GroupModel, JpaModel<GroupEntity> {
         } else if (!parent.getId().equals(getId())) {
             GroupEntity parentEntity = toEntity(parent, em);
             group.getParentGroupsReference().add(parentEntity);
+            em.persist(group);
         }
+
+        em.flush();
     }
     
     public void setParentGroupsReference(Set<GroupModel> parents) {
-        if (parents == null) {
-            return;
-        }
+        group.getParentGroupsReference().stream().forEach(g ->
+            group.getParentGroupsReference().remove(g));
 
-        parents.forEach(x -> this.setParentGroupReference(x));
+        parents.forEach(p -> {
+            this.setParentGroupReference(p);
+        });
+
+        em.persist(group);
+        em.flush();
+    }
+
+    public void setChildGroupsReference(Set<GroupModel> children) {
+        group.getChildGroupsReference().stream().forEach(g ->
+                group.getChildGroupsReference().remove(g));
+
+        children.forEach(child -> {
+            if (child == null) {
+                return;
+            } else if (!child.getId().equals(getId())) {
+                GroupEntity childEntity = toEntity(child, em);
+                group.getChildGroupsReference().add(childEntity);
+                em.persist(group);
+            }
+        });
+
+        em.flush();
     }
 
     @Override
