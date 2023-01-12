@@ -81,7 +81,7 @@ public class JpaGroupEntity extends AbstractGroupEntity implements JpaRootVersio
 
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = {})
-    @JoinTable(name = "kc_group_reference",
+    @JoinTable(name = "kc_group_group",
             joinColumns = @JoinColumn(name = "parent_group", referencedColumnName = "ID"),
             inverseJoinColumns = @JoinColumn(name = "child_group", referencedColumnName = "ID"))
     @BatchSize(size=100)
