@@ -260,7 +260,9 @@ public class JpaGroupEntity extends AbstractGroupEntity implements JpaRootVersio
     }
 
     public void setChildGroupsReference(Set<MapGroupEntity> childGroupsReference) {
-        this.childGroupsReference = childGroupsReference.stream().map(e -> (JpaGroupEntity)e).collect(Collectors.toSet());
+        this.childGroupsReference = childGroupsReference != null ?
+                childGroupsReference.stream().map(e -> (JpaGroupEntity)e).collect(Collectors.toSet()):
+                new HashSet<>();
     }
 
     public Set<MapGroupEntity> getParentGroupsReference() {
@@ -271,7 +273,9 @@ public class JpaGroupEntity extends AbstractGroupEntity implements JpaRootVersio
     }
     
     public void setParentGroupsReference(Set<MapGroupEntity> parentGroupsReference) {
-        this.parentGroupsReference = parentGroupsReference.stream().map(e -> (JpaGroupEntity)e).collect(Collectors.toSet());
+        this.parentGroupsReference = parentGroupsReference != null ?
+            parentGroupsReference.stream().map(e -> (JpaGroupEntity)e).collect(Collectors.toSet()) :
+            new HashSet<>();
     }
 
     @Override
