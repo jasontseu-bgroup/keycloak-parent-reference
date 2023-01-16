@@ -363,6 +363,18 @@ public class MapRealmProvider implements RealmProvider {
 
     @Override
     @Deprecated
+    public void addParentGroupReference(RealmModel realm, GroupModel group, GroupModel toParent) {
+        session.groups().addParentGroupReference(realm, group, toParent);
+    }
+
+    @Override
+    @Deprecated
+    public void removeParentGroupReference(RealmModel realm, GroupModel group, GroupModel toParent) {
+        session.groups().removeParentGroupReference(realm, group, toParent);
+    }
+
+    @Override
+    @Deprecated
     public Stream<GroupModel> getGroupsStream(RealmModel realm) {
         return session.groups().getGroupsStream(realm);
     }

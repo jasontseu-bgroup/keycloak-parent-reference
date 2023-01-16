@@ -34,7 +34,7 @@ import org.keycloak.storage.ldap.LDAPStorageProvider;
 /**
  * @author <a href="mailto:mposolda@redhat.com">Marek Posolda</a>
  */
-public interface LDAPStorageMapper extends Provider {
+public interface LDAPStorageMapper extends Provider, LDAPStorageSyncMapper {
 
     /**
      * Sync data from federated storage to Keycloak. It's useful just if mapper needs some data preloaded from federated storage (For example

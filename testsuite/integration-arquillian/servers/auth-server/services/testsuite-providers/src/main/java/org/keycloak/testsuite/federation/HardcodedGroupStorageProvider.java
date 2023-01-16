@@ -29,6 +29,7 @@ import org.keycloak.storage.group.GroupStorageProviderModel;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Stream;
 
 public class HardcodedGroupStorageProvider implements GroupStorageProvider {
@@ -195,15 +196,26 @@ public class HardcodedGroupStorageProvider implements GroupStorageProvider {
         }
 
         @Override
-        public void setAttribute(String name, List<String> values) {
-            throw new ReadOnlyException("group is read only");
-        }
+        public void setAttribute(String name, List<String> values) { throw new ReadOnlyException("group is read only"); }
 
         @Override
         public void removeAttribute(String name) {
             throw new ReadOnlyException("group is read only");
         }
+
+        @Override
+        public Set<GroupModel> getParentGroupsReference() { throw new ReadOnlyException("group is read only"); }
+
+        @Override
+        public Set<GroupModel> getChildGroupsReference() { throw new ReadOnlyException("group is read only"); }
+
+        @Override
+        public void setParentGroupReference(GroupModel parent) { throw new ReadOnlyException("group is read only"); }
+
+        @Override
+        public void setParentGroupsReference(Set<GroupModel> parent) { throw new ReadOnlyException("group is read only"); }
+
+        @Override
+        public void setChildGroupsReference(Set<GroupModel> parent) { throw new ReadOnlyException("group is read only"); }
     }
-
-
 }

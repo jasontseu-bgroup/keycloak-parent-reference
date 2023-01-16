@@ -21,12 +21,7 @@ import static org.keycloak.common.util.StackUtil.getShortStackTrace;
 import static org.keycloak.models.jpa.PaginationUtils.paginateQuery;
 import static org.keycloak.utils.StreamsUtil.closing;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -45,22 +40,8 @@ import org.jboss.logging.Logger;
 import org.keycloak.common.util.Time;
 import org.keycloak.connections.jpa.util.JpaUtils;
 import org.keycloak.migration.MigrationModel;
-import org.keycloak.models.ClientModel;
-import org.keycloak.models.ClientProvider;
-import org.keycloak.models.ClientScopeModel;
-import org.keycloak.models.ClientScopeProvider;
-import org.keycloak.models.DeploymentStateProvider;
-import org.keycloak.models.GroupModel;
-import org.keycloak.models.GroupProvider;
-import org.keycloak.models.KeycloakSession;
-import org.keycloak.models.ModelDuplicateException;
-import org.keycloak.models.ModelException;
-import org.keycloak.models.RealmModel;
-import org.keycloak.models.RealmProvider;
-import org.keycloak.models.RoleContainerModel;
+import org.keycloak.models.*;
 import org.keycloak.models.RoleContainerModel.RoleRemovedEvent;
-import org.keycloak.models.RoleModel;
-import org.keycloak.models.RoleProvider;
 import org.keycloak.models.delegate.ClientModelLazyDelegate;
 import org.keycloak.models.jpa.entities.ClientAttributeEntity;
 import org.keycloak.models.jpa.entities.ClientEntity;
@@ -78,7 +59,7 @@ import org.keycloak.models.utils.KeycloakModelUtils;
  * @author <a href="mailto:bill@burkecentral.com">Bill Burke</a>
  * @version $Revision: 1 $
  */
-public class JpaRealmProvider implements RealmProvider, ClientProvider, ClientScopeProvider, GroupProvider, RoleProvider, DeploymentStateProvider {
+public class JpaRealmProvider implements RealmProvider, ClientProvider, ClientScopeProvider, ComplexGroupProvider, GroupProvider, RoleProvider, DeploymentStateProvider {
     protected static final Logger logger = Logger.getLogger(JpaRealmProvider.class);
     private final KeycloakSession session;
     protected EntityManager em;
@@ -659,6 +640,39 @@ public class JpaRealmProvider implements RealmProvider, ClientProvider, ClientSc
     @Override
     public void addTopLevelGroup(RealmModel realm, GroupModel subGroup) {
         subGroup.setParent(null);
+    }
+
+    @Override
+    public void addParentGroupReference(RealmModel realm, GroupModel group, GroupModel toParent) {
+        if (toParent != null && group.getId().equals(toParent.getId())) {
+            return;
+        }
+
+        if (toParent != null) {
+            GroupEntity parent = GroupAdapter.toEntity(toParent, em);
+            GroupEntity child = GroupAdapter.toEntity(group, em);
+
+            parent.getChildGroupsReference().add(child);
+            child.getParentGroupsReference().add(parent);
+        }
+
+        em.flush();
+    }
+
+    @Override
+    public void removeParentGroupReference(RealmModel realm, GroupModel group, GroupModel toParent) {
+        if (toParent != null && group.getId().equals(toParent.getId())) {
+            return;
+        }
+
+        if (toParent != null) {
+            GroupEntity parent = GroupAdapter.toEntity(toParent, em);
+            GroupEntity child = GroupAdapter.toEntity(group, em);
+
+            parent.getChildGroupsReference().remove(child);
+            child.getParentGroupsReference().remove(parent);
+        }
+        em.flush();
     }
 
     public void preRemove(RealmModel realm, RoleModel role) {

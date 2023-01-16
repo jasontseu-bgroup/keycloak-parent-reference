@@ -317,6 +317,8 @@ public class GenerateHotRodEntityImplementationsProcessor extends AbstractGenera
                                 .filter((ExecutableElement ee) ->  ! ee.getModifiers().contains(Modifier.ABSTRACT))
                                 .findAny();
 
+
+
                         try {
                             if (parentMethod.isPresent()) {
                                 // Do not implement the method if it is already implemented by the parent class

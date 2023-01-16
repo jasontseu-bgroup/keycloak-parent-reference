@@ -19,11 +19,7 @@ package org.keycloak.storage.ldap.mappers.membership.group;
 
 import org.jboss.logging.Logger;
 import org.keycloak.component.ComponentModel;
-import org.keycloak.models.GroupModel;
-import org.keycloak.models.ModelException;
-import org.keycloak.models.RealmModel;
-import org.keycloak.models.RoleModel;
-import org.keycloak.models.UserModel;
+import org.keycloak.models.*;
 import org.keycloak.models.utils.KeycloakModelUtils;
 import org.keycloak.models.utils.RoleUtils;
 import org.keycloak.models.utils.UserModelDelegate;
@@ -36,42 +32,28 @@ import org.keycloak.storage.ldap.idm.query.Condition;
 import org.keycloak.storage.ldap.idm.query.internal.LDAPQuery;
 import org.keycloak.storage.ldap.idm.query.internal.LDAPQueryConditionsBuilder;
 import org.keycloak.storage.ldap.mappers.AbstractLDAPStorageMapper;
-import org.keycloak.storage.ldap.mappers.membership.CommonLDAPGroupMapper;
-import org.keycloak.storage.ldap.mappers.membership.CommonLDAPGroupMapperConfig;
-import org.keycloak.storage.ldap.mappers.membership.LDAPGroupMapperMode;
-import org.keycloak.storage.ldap.mappers.membership.MembershipType;
-import org.keycloak.storage.ldap.mappers.membership.UserRolesRetrieveStrategy;
+import org.keycloak.storage.ldap.mappers.membership.*;
 import org.keycloak.storage.user.SynchronizationResult;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
  * @author <a href="mailto:mposolda@redhat.com">Marek Posolda</a>
  */
-public class GroupLDAPStorageMapper extends AbstractLDAPStorageMapper implements CommonLDAPGroupMapper {
+public class MultiParentReferenceGroupLDAPStorageMapper extends AbstractLDAPStorageMapper implements CommonLDAPGroupMapper {
 
-    private static final Logger logger = Logger.getLogger(GroupLDAPStorageMapper.class);
+    private static final Logger logger = Logger.getLogger(MultiParentReferenceGroupLDAPStorageMapper.class);
 
     private final GroupMapperConfig config;
-    private final GroupLDAPStorageMapperFactory factory;
+    private final MultiParentReferenceGroupLDAPStorageMapperFactory factory;
 
     // Flag to avoid syncing multiple times per transaction
     private boolean syncFromLDAPPerformedInThisTransaction = false;
 
-    public GroupLDAPStorageMapper(ComponentModel mapperModel, LDAPStorageProvider ldapProvider, GroupLDAPStorageMapperFactory factory) {
+    public MultiParentReferenceGroupLDAPStorageMapper(ComponentModel mapperModel, LDAPStorageProvider ldapProvider, MultiParentReferenceGroupLDAPStorageMapperFactory factory) {
         super(mapperModel, ldapProvider);
         this.config = new GroupMapperConfig(mapperModel);
         this.factory = factory;
@@ -316,15 +298,17 @@ public class GroupLDAPStorageMapper extends AbstractLDAPStorageMapper implements
         if (kcGroup != null) {
             logger.debugf("Updated Keycloak group '%s' from LDAP", kcGroup.getName());
             updateAttributesOfKCGroup(kcGroup, ldapGroups.get(kcGroup.getName()));
+
+            AddParentGroupReferenceIfNotExist(kcGroup, kcParent);
             syncResult.increaseUpdated();
         } else {
-            kcGroup = createKcGroup(realm, groupTreeEntry.getGroupName(), kcParent);
+            kcGroup = createKcGroup(realm, groupTreeEntry.getGroupName(), null);
+            AddParentGroupReferenceIfNotExist(kcGroup, kcParent);
             if (kcGroup.getParent() == null) {
                 logger.debugf("Imported top-level group '%s' from LDAP", kcGroup.getName());
             } else {
                 logger.debugf("Imported group '%s' from LDAP as child of group '%s'", kcGroup.getName(), kcGroup.getParent().getName());
             }
-
             updateAttributesOfKCGroup(kcGroup, ldapGroups.get(kcGroup.getName()));
             syncResult.increaseAdded();
         }
@@ -333,6 +317,17 @@ public class GroupLDAPStorageMapper extends AbstractLDAPStorageMapper implements
 
         for (GroupTreeResolver.GroupTreeEntry childEntry : groupTreeEntry.getChildren()) {
             updateKeycloakGroupTreeEntry(realm, childEntry, ldapGroups, kcGroup, syncResult, visitedGroupIds);
+        }
+    }
+
+    private void AddParentGroupReferenceIfNotExist(GroupModel kcGroup, GroupModel kcParent) {
+        Set<GroupModel> parents = kcGroup.getParentGroupsReference();
+        if (kcParent != null) {
+            if (parents != null && !parents.contains(kcParent)) {
+                kcGroup.setParentGroupReference(kcParent);
+            } else {
+                kcGroup.setParentGroupReference(kcParent);
+            }
         }
     }
 

@@ -82,14 +82,14 @@ jobs:
             exit 1
           fi
 
-      - name: Analyze Test and/or Coverage Results
-        uses: runforesight/foresight-test-kit-action@v1.2.1
-        if: always() && github.repository == 'keycloak/keycloak'
-        with:
-          api_key: ${{ secrets.FORESIGHT_API_KEY }}
-          test_format: JUNIT
-          test_framework: JUNIT
-          test_path: '**/target/surefire-reports/*.xml'
+#      - name: Analyze Test and/or Coverage Results
+#        uses: runforesight/foresight-test-kit-action@v1.2.1
+#        if: always() && github.repository == 'keycloak/keycloak'
+#        with:
+#          api_key: ${{ secrets.FORESIGHT_API_KEY }}
+#          test_format: JUNIT
+#          test_framework: JUNIT
+#          test_path: '**/target/surefire-reports/*.xml'
 
       - name: Unit test reports
         uses: actions/upload-artifact@v3
@@ -172,14 +172,14 @@ jobs:
             exit 1
           fi
 
-      - name: Analyze Test and/or Coverage Results
-        uses: runforesight/foresight-test-kit-action@v1.2.1
-        if: always() && github.repository == 'keycloak/keycloak'
-        with:
-          api_key: ${{ secrets.FORESIGHT_API_KEY }}
-          test_format: JUNIT
-          test_framework: JUNIT
-          test_path: 'testsuite/model/target/surefire-reports/*.xml'
+#      - name: Analyze Test and/or Coverage Results
+#        uses: runforesight/foresight-test-kit-action@v1.2.1
+#        if: always() && github.repository == 'keycloak/keycloak'
+#        with:
+#          api_key: ${{ secrets.FORESIGHT_API_KEY }}
+#          test_format: JUNIT
+#          test_framework: JUNIT
+#          test_path: 'testsuite/model/target/surefire-reports/*.xml'
 
       - name: Model test reports
         uses: actions/upload-artifact@v3
@@ -256,14 +256,14 @@ jobs:
           find . -path '*/target/surefire-reports/*.xml' | zip -q reports-${{ matrix.server }}-base-tests-${{ matrix.tests }}.zip -@
           exit $TEST_RESULT
 
-      - name: Analyze Test and/or Coverage Results
-        uses: runforesight/foresight-test-kit-action@v1.2.1
-        if: always() && github.repository == 'keycloak/keycloak'
-        with:
-          api_key: ${{ secrets.FORESIGHT_API_KEY }}
-          test_format: JUNIT
-          test_framework: JUNIT
-          test_path: 'testsuite/integration-arquillian/tests/base/target/surefire-reports/*.xml'
+#      - name: Analyze Test and/or Coverage Results
+#        uses: runforesight/foresight-test-kit-action@v1.2.1
+#        if: always() && github.repository == 'keycloak/keycloak'
+#        with:
+#          api_key: ${{ secrets.FORESIGHT_API_KEY }}
+#          test_format: JUNIT
+#          test_framework: JUNIT
+#          test_path: 'testsuite/integration-arquillian/tests/base/target/surefire-reports/*.xml'
 
       - name: Base test reports
         uses: actions/upload-artifact@v3
@@ -328,14 +328,14 @@ jobs:
           find . -path '*/target/surefire-reports/*.xml' | zip -q reports-${{ matrix.server }}-base-tests-${{ matrix.tests }}.zip -@
           exit $TEST_RESULT
 
-      - name: Analyze Test and/or Coverage Results
-        uses: runforesight/foresight-test-kit-action@v1.2.1
-        if: always() && github.repository == 'keycloak/keycloak'
-        with:
-          api_key: ${{ secrets.FORESIGHT_API_KEY }}
-          test_format: JUNIT
-          test_framework: JUNIT
-          test_path: 'testsuite/integration-arquillian/tests/base/target/surefire-reports/*.xml'
+#      - name: Analyze Test and/or Coverage Results
+#        uses: runforesight/foresight-test-kit-action@v1.2.1
+#        if: always() && github.repository == 'keycloak/keycloak'
+#        with:
+#          api_key: ${{ secrets.FORESIGHT_API_KEY }}
+#          test_format: JUNIT
+#          test_framework: JUNIT
+#          test_path: 'testsuite/integration-arquillian/tests/base/target/surefire-reports/*.xml'
 
       - name: Base test reports
         uses: actions/upload-artifact@v3
@@ -424,14 +424,14 @@ jobs:
           find . -path '*/target/surefire-reports/*.xml' | zip -q reports-${{ matrix.server }}-base-tests-${{ matrix.tests }}.zip -@
           exit $TEST_RESULT
 
-      - name: Analyze Test and/or Coverage Results
-        uses: runforesight/foresight-test-kit-action@v1.2.1
-        if: always() && github.repository == 'keycloak/keycloak'
-        with:
-          api_key: ${{ secrets.FORESIGHT_API_KEY }}
-          test_format: JUNIT
-          test_framework: JUNIT
-          test_path: 'testsuite/integration-arquillian/tests/base/target/surefire-reports/*.xml'
+#      - name: Analyze Test and/or Coverage Results
+#        uses: runforesight/foresight-test-kit-action@v1.2.1
+#        if: always() && github.repository == 'keycloak/keycloak'
+#        with:
+#          api_key: ${{ secrets.FORESIGHT_API_KEY }}
+#          test_format: JUNIT
+#          test_framework: JUNIT
+#          test_path: 'testsuite/integration-arquillian/tests/base/target/surefire-reports/*.xml'
 
       - name: Base test reports
         uses: actions/upload-artifact@v3
@@ -484,14 +484,14 @@ jobs:
           find . -path '*/target/surefire-reports/*.xml' | zip -q reports-quarkus-cluster-tests.zip -@
           exit $TEST_RESULT
 
-      - name: Analyze Test and/or Coverage Results
-        uses: runforesight/foresight-test-kit-action@v1.2.1
-        if: always() && github.repository == 'keycloak/keycloak'
-        with:
-          api_key: ${{ secrets.FORESIGHT_API_KEY }}
-          test_format: JUNIT
-          test_framework: JUNIT
-          test_path: 'testsuite/integration-arquillian/tests/base/target/surefire-reports/*.xml'
+#      - name: Analyze Test and/or Coverage Results
+#        uses: runforesight/foresight-test-kit-action@v1.2.1
+#        if: always() && github.repository == 'keycloak/keycloak'
+#        with:
+#          api_key: ${{ secrets.FORESIGHT_API_KEY }}
+#          test_format: JUNIT
+#          test_framework: JUNIT
+#          test_path: 'testsuite/integration-arquillian/tests/base/target/surefire-reports/*.xml'
 
       - name: Quarkus cluster test reports
         uses: actions/upload-artifact@v3
@@ -552,14 +552,14 @@ jobs:
           TEST_RESULT=${PIPESTATUS[0]}
           exit $TEST_RESULT
 
-      - name: Analyze Test and/or Coverage Results
-        uses: runforesight/foresight-test-kit-action@v1.2.1
-        if: always() && github.repository == 'keycloak/keycloak'
-        with:
-          api_key: ${{ secrets.FORESIGHT_API_KEY }}
-          test_format: JUNIT
-          test_framework: JUNIT
-          test_path: 'quarkus/tests/integration/target/surefire-reports/*.xml'
+#      - name: Analyze Test and/or Coverage Results
+#        uses: runforesight/foresight-test-kit-action@v1.2.1
+#        if: always() && github.repository == 'keycloak/keycloak'
+#        with:
+#          api_key: ${{ secrets.FORESIGHT_API_KEY }}
+#          test_format: JUNIT
+#          test_framework: JUNIT
+#          test_path: 'quarkus/tests/integration/target/surefire-reports/*.xml'
 
       - name: Quarkus test reports
         uses: actions/upload-artifact@v3

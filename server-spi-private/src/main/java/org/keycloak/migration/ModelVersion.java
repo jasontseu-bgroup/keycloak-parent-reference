@@ -20,16 +20,19 @@ package org.keycloak.migration;
 import org.jboss.logging.Logger;
 
 /**
-* @author <a href="mailto:bill@burkecentral.com">Bill Burke</a>
-* @version $Revision: 1 $
-*/
+ * @author <a href="mailto:bill@burkecentral.com">Bill Burke</a>
+ * @version $Revision: 1 $
+ */
 public class ModelVersion {
     private static Logger logger = Logger.getLogger(ModelVersion.class);
 
     int major;
     int minor;
     int micro;
+    int build;
     String qualifier;
+
+    boolean hasReleaseBuildNumber;
 
     public ModelVersion(int major, int minor, int micro) {
         this.major = major;
@@ -38,9 +41,9 @@ public class ModelVersion {
     }
 
     public ModelVersion(String version) {
-        version = version.split("-")[0];
+        String[] versions = version.split("-");
 
-        String[] split = version.split("\\.");
+        String[] split = versions[0].split("\\.");
         try {
             if (split.length > 0) {
                 major = Integer.parseInt(split[0]);
@@ -51,13 +54,20 @@ public class ModelVersion {
             if (split.length > 2) {
                 micro = Integer.parseInt(split[2]);
             }
-            if (split.length > 3) {
+
+            if (split.length > 3 ) {
                 qualifier = split[3];
 
                 if (qualifier.startsWith("redhat")) {
                     qualifier = null;
                 }
             }
+
+            if (versions.length > 2 && versions[1].equals("release")) {
+                hasReleaseBuildNumber = true;
+                build = Integer.parseInt(versions[2]);
+            }
+
         } catch (NumberFormatException e) {
             logger.warn("failed to parse version: " + version, e);
         }
@@ -79,6 +89,10 @@ public class ModelVersion {
         return qualifier;
     }
 
+    public int getBuild() {
+        return build;
+    }
+
     public boolean lessThan(ModelVersion version) {
         if (major < version.major) {
             return true;
@@ -96,6 +110,10 @@ public class ModelVersion {
             return true;
         } else if (minor > version.minor) {
             return false;
+        }
+
+        if(hasReleaseBuildNumber || version.hasReleaseBuildNumber) {
+            return build < version.build;
         }
 
         if (qualifier != null && qualifier.equals(version.qualifier)) return false;
@@ -118,11 +136,23 @@ public class ModelVersion {
         }
 
         ModelVersion v = (ModelVersion) obj;
-        return v.getMajor() == major && v.getMinor() == minor && v.getMicro() == micro;
+        boolean equalResult = v.getMajor() == major && v.getMinor() == minor && v.getMicro() == micro;
+
+        if(hasReleaseBuildNumber) {
+            equalResult = equalResult && v.getBuild() == build;
+        }
+
+        return  equalResult;
     }
 
     @Override
     public String toString() {
-        return major + "." + minor + "." + micro;
+        String output = major + "." + minor + "." + micro;
+
+        if(hasReleaseBuildNumber) {
+            output = output + "-release-" + build;
+        }
+
+        return output;
     }
 }

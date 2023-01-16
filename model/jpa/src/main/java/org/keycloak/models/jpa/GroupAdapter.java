@@ -18,10 +18,7 @@
 package org.keycloak.models.jpa;
 
 import org.keycloak.common.util.MultivaluedHashMap;
-import org.keycloak.models.ClientModel;
-import org.keycloak.models.GroupModel;
-import org.keycloak.models.RealmModel;
-import org.keycloak.models.RoleModel;
+import org.keycloak.models.*;
 import org.keycloak.models.jpa.entities.GroupAttributeEntity;
 import org.keycloak.models.jpa.entities.GroupEntity;
 import org.keycloak.models.jpa.entities.GroupRoleMappingEntity;
@@ -30,11 +27,8 @@ import org.keycloak.models.utils.RoleUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.persistence.LockModeType;
 
@@ -44,7 +38,7 @@ import static org.keycloak.utils.StreamsUtil.closing;
  * @author <a href="mailto:bill@burkecentral.com">Bill Burke</a>
  * @version $Revision: 1 $
  */
-public class GroupAdapter implements GroupModel , JpaModel<GroupEntity> {
+public class GroupAdapter implements GroupModel, JpaModel<GroupEntity> {
 
     protected GroupEntity group;
     protected EntityManager em;
@@ -271,6 +265,59 @@ public class GroupAdapter implements GroupModel , JpaModel<GroupEntity> {
         return getRoleMappingsStream().filter(r -> RoleUtils.isClientRole(r, app));
     }
 
+    public Set<GroupModel> getChildGroupsReference() {
+        TypedQuery<String> query = em.createNamedQuery("getGroupIdsByParentReference", String.class);
+        query.setParameter("parent", group.getId());
+        return query.getResultStream().map(realm::getGroupById).filter(Objects::nonNull).collect(Collectors.toSet());
+    }
+
+    public Set<GroupModel> getParentGroupsReference() {
+        TypedQuery<String> query = em.createNamedQuery("getGroupIdsByChildReference", String.class);
+        query.setParameter("child", group.getId());
+        return query.getResultStream().map(realm::getGroupById).filter(Objects::nonNull).collect(Collectors.toSet());
+    }
+    
+    public void setParentGroupReference(GroupModel parent) {
+        if (parent == null) {
+            return;
+        } else if (!parent.getId().equals(getId())) {
+            GroupEntity parentEntity = toEntity(parent, em);
+            group.getParentGroupsReference().add(parentEntity);
+            em.persist(group);
+        }
+
+        em.flush();
+    }
+    
+    public void setParentGroupsReference(Set<GroupModel> parents) {
+        group.getParentGroupsReference().stream().forEach(g ->
+            group.getParentGroupsReference().remove(g));
+
+        parents.forEach(p -> {
+            this.setParentGroupReference(p);
+        });
+
+        em.persist(group);
+        em.flush();
+    }
+
+    public void setChildGroupsReference(Set<GroupModel> children) {
+        group.getChildGroupsReference().stream().forEach(g ->
+                group.getChildGroupsReference().remove(g));
+
+        children.forEach(child -> {
+            if (child == null) {
+                return;
+            } else if (!child.getId().equals(getId())) {
+                GroupEntity childEntity = toEntity(child, em);
+                group.getChildGroupsReference().add(childEntity);
+                em.persist(group);
+            }
+        });
+
+        em.flush();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -284,7 +331,4 @@ public class GroupAdapter implements GroupModel , JpaModel<GroupEntity> {
     public int hashCode() {
         return getId().hashCode();
     }
-
-
-
 }

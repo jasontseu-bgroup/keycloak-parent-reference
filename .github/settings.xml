@@ -45,4 +45,11 @@
             </repositories>
         </profile>
     </profiles>
+    <servers>
+        <server>
+            <id>VidiConfigFeed</id>
+            <username>VIDICONFIGFEED_USERNAME</username>
+            <password>VIDICONFIGFEED_PASSWORD</password>
+        </server>
+    </servers>
 </settings>

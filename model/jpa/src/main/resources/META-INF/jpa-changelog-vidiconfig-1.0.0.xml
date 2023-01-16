@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+  ~ * Copyright 2020 Red Hat, Inc. and/or its affiliates
+  ~ * and other contributors as indicated by the @author tags.
+  ~ *
+  ~ * Licensed under the Apache License, Version 2.0 (the "License");
+  ~ * you may not use this file except in compliance with the License.
+  ~ * You may obtain a copy of the License at
+  ~ *
+  ~ * http://www.apache.org/licenses/LICENSE-2.0
+  ~ *
+  ~ * Unless required by applicable law or agreed to in writing, software
+  ~ * distributed under the License is distributed on an "AS IS" BASIS,
+  ~ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ * See the License for the specific language governing permissions and
+  ~ * limitations under the License.
+  -->
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+  <changeSet author="vidiconfig" id="vidiconfig-1.0.0-1">
+    <dropUniqueConstraint tableName="KEYCLOAK_GROUP" constraintName="sibling_names"/>
+  </changeSet>
+
+  <changeSet author="vidiconfig" id="vidiconfig-1.0.0-2">
+    <dropColumn tableName="KEYCLOAK_GROUP" columnName="PARENT_GROUP" />
+  </changeSet>
+
+  <changeSet author="vidiconfig" id="vidiconfig-1.0.0-3">
+    <createTable tableName="KEYCLOAK_GROUP_GROUP">
+      <column name="PARENT_GROUP" type="VARCHAR(36)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="CHILD_GROUP" type="VARCHAR(36)">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+
+    <addPrimaryKey tableName="KEYCLOAK_GROUP_GROUP" columnNames="PARENT_GROUP,CHILD_GROUP" constraintName="PK_keycloak_group_group"/>
+
+    <addForeignKeyConstraint
+      baseTableName="KEYCLOAK_GROUP_GROUP"
+      baseColumnNames="PARENT_GROUP"
+      constraintName="FK_keycloak_group_group_parent_group"
+      referencedTableName="KEYCLOAK_GROUP"
+      referencedColumnNames="id"
+      onDelete="CASCADE"/>
+
+    <addForeignKeyConstraint
+      baseTableName="KEYCLOAK_GROUP_GROUP"
+      baseColumnNames="CHILD_GROUP"
+      constraintName="FK_keycloak_group_group_child_group"
+      referencedTableName="KEYCLOAK_GROUP"
+      referencedColumnNames="id"
+      onDelete="CASCADE"/>
+  </changeSet>
+
+  <changeSet author="vidiconfig" id="vidiconfig-1.0.0-4">
+    <addUniqueConstraint columnNames="realm_id, name" constraintName="sibling_names" tableName="KEYCLOAK_GROUP"/>
+  </changeSet>
+
+</databaseChangeLog>

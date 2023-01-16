@@ -17,17 +17,22 @@
 
 package org.keycloak.models.jpa.entities;
 
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Nationalized;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Set;
 
 /**
  * @author <a href="mailto:bill@burkecentral.com">Bill Burke</a>
  * @version $Revision: 1 $
  */
 @NamedQueries({
+        @NamedQuery(name="getGroupIdsByParentReference", query="select u.id from GroupEntity u inner join u.parentGroupsReference parent where parent.id = :parent"),
+        @NamedQuery(name="getGroupIdsByChildReference", query="select u.id from GroupEntity u inner join u.childGroupsReference child where child.id = :child"),
         @NamedQuery(name="getGroupIdsByParent", query="select u.id from GroupEntity u where u.parentId = :parent"),
         @NamedQuery(name="getGroupIdsByRealm", query="select u.id from GroupEntity u where u.realm = :realm  order by u.name ASC"),
         @NamedQuery(name="getGroupIdsByNameContaining", query="select u.id from GroupEntity u where u.realm = :realm and u.name like concat('%',:search,'%') order by u.name ASC"),
@@ -61,6 +66,17 @@ public class GroupEntity {
 
     @Column(name = "PARENT_GROUP")
     private String parentId;
+
+    @BatchSize(size=100)
+    @ManyToMany
+    @JoinTable(name = "KEYCLOAK_GROUP_GROUP",
+            joinColumns = @JoinColumn(name = "PARENT_GROUP", referencedColumnName = "ID"),
+            inverseJoinColumns = @JoinColumn(name = "CHILD_GROUP", referencedColumnName = "ID"))
+    private Set<GroupEntity> childGroupsReference;
+
+    @BatchSize(size=100)
+    @ManyToMany(mappedBy="childGroupsReference")
+    private Set<GroupEntity> parentGroupsReference;
 
     @Column(name = "REALM_ID")
     private String realm;
@@ -129,5 +145,27 @@ public class GroupEntity {
     @Override
     public int hashCode() {
         return id.hashCode();
+    }
+
+    public Set<GroupEntity> getChildGroupsReference() {
+        if (childGroupsReference == null) {
+            childGroupsReference = new HashSet<>();
+        }
+        return childGroupsReference;
+    }
+
+    public void setChildGroupsReference(Set<GroupEntity> childGroupsReference) {
+        this.childGroupsReference = childGroupsReference;
+    }
+
+    public Set<GroupEntity> getParentGroupsReference() {
+        if (parentGroupsReference == null) {
+            parentGroupsReference = new HashSet<>();
+        }
+        return parentGroupsReference;
+    }
+
+    public void setParentGroupsReference(Set<GroupEntity> parentGroupsReference) {
+        this.parentGroupsReference = parentGroupsReference;
     }
 }

@@ -35,10 +35,13 @@ import org.keycloak.models.map.storage.QueryParameters;
 import org.keycloak.models.map.storage.criteria.DefaultModelCriteria;
 import org.keycloak.models.utils.KeycloakModelUtils;
 
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.keycloak.common.util.StackUtil.getShortStackTrace;
@@ -66,6 +69,27 @@ public class MapGroupProvider implements GroupProvider {
             @Override
             public Stream<GroupModel> getSubGroupsStream() {
                 return getGroupsByParentId(realm, this.getId());
+            }
+
+            @Override
+            public void setParentGroupReference(GroupModel parent) {
+                Set<MapGroupEntity> parentGroupsReferenceEntity = entity.getParentGroupsReference();
+                if (parentGroupsReferenceEntity == null) {
+                    parentGroupsReferenceEntity = new HashSet<>();
+                }
+                MapGroupEntity entity = tx.read(parent.getId());
+                parentGroupsReferenceEntity.add(entity);
+                entity.setParentGroupsReference(parentGroupsReferenceEntity);
+            }
+
+            @Override
+            public void setParentGroupsReference(Set<GroupModel> parents) {
+                entity.setParentGroupsReference(parents.stream().map(p -> tx.read(p.getId())).collect(Collectors.toSet()));
+            }
+
+            @Override
+            public void setChildGroupsReference(Set<GroupModel> children) {
+                entity.setChildGroupsReference(children.stream().map(p -> tx.read(p.getId())).collect(Collectors.toSet()));
             }
         };
     }
@@ -324,6 +348,16 @@ public class MapGroupProvider implements GroupProvider {
         }
 
         subGroup.setParent(null);
+    }
+
+    @Override
+    public void addParentGroupReference(RealmModel realm, GroupModel group, GroupModel toParent) {
+
+    }
+
+    @Override
+    public void removeParentGroupReference(RealmModel realm, GroupModel group, GroupModel toParent) {
+
     }
 
     public void preRemove(RealmModel realm, RoleModel role) {

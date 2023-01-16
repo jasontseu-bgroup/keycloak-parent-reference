@@ -19,16 +19,12 @@ package org.keycloak.models.map.group;
 
 import org.keycloak.models.ClientModel;
 import org.keycloak.models.GroupModel;
-import org.keycloak.models.GroupProvider;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.RealmModel;
 import org.keycloak.models.RoleModel;
 import org.keycloak.models.utils.RoleUtils;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Stream;
 
 
@@ -166,5 +162,35 @@ public abstract class MapGroupAdapter extends AbstractGroupModel<MapGroupEntity>
     @Override
     public void deleteRoleMapping(RoleModel role) {
         entity.removeGrantedRole(role.getId());
+    }
+
+    @Override
+    public Set<GroupModel> getParentGroupsReference() {
+        Set<MapGroupEntity> parentGroupsReferenceEntity = entity.getParentGroupsReference();
+        Set<GroupModel> parentGroupsReference = new HashSet<>();
+
+            if (parentGroupsReferenceEntity != null) {
+                for (MapGroupEntity parentGroupReferenceEntity : parentGroupsReferenceEntity) {
+                    GroupModel parentGroupModelReference = session.groups().getGroupById(realm, parentGroupReferenceEntity.getId());
+                    parentGroupsReference.add(parentGroupModelReference);
+                }
+            }
+
+        return parentGroupsReference;
+    }
+
+    @Override
+    public Set<GroupModel> getChildGroupsReference() {
+        Set<MapGroupEntity> childGroupsReferenceEntity = entity.getChildGroupsReference();
+        Set<GroupModel> childGroupsReference = new HashSet<>();
+
+        if (childGroupsReferenceEntity != null) {
+            for (MapGroupEntity childGroupReferenceEntity : childGroupsReferenceEntity) {
+                GroupModel childGroupModelReference = session.groups().getGroupById(realm, childGroupReferenceEntity.getId());
+                childGroupsReference.add(childGroupModelReference);
+            }
+        }
+
+        return childGroupsReference;
     }
 }

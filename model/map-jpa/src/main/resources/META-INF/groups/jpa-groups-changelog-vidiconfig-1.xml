@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+  <changeSet author="vidiconfig" id="vidiconfig-1.0.0-1">
+    <createTable tableName="kc_group_group">
+      <column name="parent_group" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+      <column name="child_group" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+
+    <addPrimaryKey tableName="kc_group_group" columnNames="parent_group,child_group" constraintName="pl_kc_group_group"/>
+
+    <addForeignKeyConstraint
+      baseTableName="kc_group_group"
+      baseColumnNames="parent_group"
+      constraintName="fk_kc_group_group_parent_group"
+      referencedTableName="kc_group"
+      referencedColumnNames="id"
+      onDelete="CASCADE"/>
+
+    <addForeignKeyConstraint
+      baseTableName="kc_group_group"
+      baseColumnNames="child_group"
+      constraintName="fk_kc_group_group_child_group"
+      referencedTableName="kc_group"
+      referencedColumnNames="id"
+      onDelete="CASCADE"/>
+  </changeSet>
+
+</databaseChangeLog>

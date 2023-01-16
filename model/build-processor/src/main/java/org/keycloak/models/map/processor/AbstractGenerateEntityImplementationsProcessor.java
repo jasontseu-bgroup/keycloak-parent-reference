@@ -99,6 +99,8 @@ public abstract class AbstractGenerateEntityImplementationsProcessor extends Abs
                 generator.generate(e);
             } catch (Exception ex) {
                 processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Could not generate implementation for class: " + ex, e);
+
+
             }
         }
 

@@ -1917,6 +1917,26 @@ module.config([ '$routeProvider', function($routeProvider) {
             },
             controller : 'LDAPUserStorageCtrl'
         })
+        .when('/create/user-storage/:realm/providers/domain-ldap', {
+                templateUrl : resourceUrl + '/partials/user-storage-domain-ldap.html',
+                resolve : {
+                    realm : function(RealmLoader) {
+                        return RealmLoader();
+                    },
+                    instance : function() {
+                        return {
+
+                        };
+                    },
+                    providerId : function($route) {
+                        return $route.current.params.provider;
+                    },
+                    serverInfo : function(ServerInfoLoader) {
+                        return ServerInfoLoader();
+                    }
+                },
+                controller : 'DomainLDAPUserStorageCtrl'
+            })
         .when('/create/user-storage/:realm/providers/kerberos', {
             templateUrl : resourceUrl + '/partials/user-storage-kerberos.html',
             resolve : {
@@ -1975,6 +1995,24 @@ module.config([ '$routeProvider', function($routeProvider) {
             },
             controller : 'LDAPUserStorageCtrl'
         })
+        .when('/realms/:realm/user-storage/providers/domain-ldap/:componentId', {
+            templateUrl : resourceUrl + '/partials/user-storage-domain-ldap.html',
+            resolve : {
+                realm : function(RealmLoader) {
+                    return RealmLoader();
+                },
+                instance : function(ComponentLoader) {
+                    return ComponentLoader();
+                },
+                providerId : function($route) {
+                    return $route.current.params.provider;
+                },
+                serverInfo : function(ServerInfoLoader) {
+                    return ServerInfoLoader();
+                }
+            },
+            controller : 'DomainLDAPUserStorageCtrl'
+        })
         .when('/realms/:realm/user-storage/providers/kerberos/:componentId', {
             templateUrl : resourceUrl + '/partials/user-storage-kerberos.html',
             resolve : {
@@ -2026,6 +2064,21 @@ module.config([ '$routeProvider', function($routeProvider) {
             },
             controller : 'LDAPMapperListCtrl'
         })
+        .when('/realms/:realm/domain-ldap-mappers/:componentId', {
+            templateUrl : function(params){ return resourceUrl + '/partials/user-storage-domain-ldap-mappers.html'; },
+            resolve : {
+                realm : function(RealmLoader) {
+                    return RealmLoader();
+                },
+                provider : function(ComponentLoader) {
+                    return ComponentLoader();
+                },
+                mappers : function(ComponentsLoader, $route) {
+                    return ComponentsLoader.loadComponents($route.current.params.componentId, 'com.vidispine.storage.ldap.mappers.LDAPStorageMapper');
+                }
+            },
+            controller : 'DomainLDAPMapperListCtrl'
+        })
         .when('/create/ldap-mappers/:realm/:componentId', {
             templateUrl : function(params){ return resourceUrl + '/partials/user-storage-ldap-mapper-detail.html'; },
             resolve : {
@@ -2044,6 +2097,24 @@ module.config([ '$routeProvider', function($routeProvider) {
             },
             controller : 'LDAPMapperCreateCtrl'
         })
+        .when('/create/domain-ldap-mappers/:realm/:componentId', {
+                    templateUrl : function(params){ return resourceUrl + '/partials/user-storage-domain-ldap-mapper-detail.html'; },
+                    resolve : {
+                        realm : function(RealmLoader) {
+                            return RealmLoader();
+                        },
+                        provider : function(ComponentLoader) {
+                            return ComponentLoader();
+                        },
+                        mapperTypes : function(SubComponentTypesLoader, $route) {
+                            return SubComponentTypesLoader.loadComponents($route.current.params.componentId, 'com.vidispine.storage.ldap.mappers.LDAPStorageMapper');
+                        },
+                        clients : function(ClientListLoader) {
+                            return ClientListLoader();
+                        }
+                    },
+                    controller : 'DomainLDAPMapperCreateCtrl'
+                })
         .when('/realms/:realm/ldap-mappers/:componentId/mappers/:mapperId', {
             templateUrl : function(params){ return resourceUrl + '/partials/user-storage-ldap-mapper-detail.html'; },
             resolve : {
@@ -2065,6 +2136,27 @@ module.config([ '$routeProvider', function($routeProvider) {
             },
             controller : 'LDAPMapperCtrl'
         })
+        .when('/realms/:realm/domain-ldap-mappers/:componentId/mappers/:mapperId', {
+                    templateUrl : function(params){ return resourceUrl + '/partials/user-storage-domain-ldap-mapper-detail.html'; },
+                    resolve : {
+                        realm : function(RealmLoader) {
+                            return RealmLoader();
+                        },
+                        provider : function(ComponentLoader) {
+                            return ComponentLoader();
+                        },
+                        mapperTypes : function(SubComponentTypesLoader, $route) {
+                            return SubComponentTypesLoader.loadComponents($route.current.params.componentId, 'com.vidispine.storage.ldap.mappers.LDAPStorageMapper');
+                        },
+                        mapper : function(LDAPMapperLoader) {
+                            return LDAPMapperLoader();
+                        },
+                        clients : function(ClientListLoader) {
+                            return ClientListLoader();
+                        }
+                    },
+                    controller : 'DomainLDAPMapperCtrl'
+                })
         .when('/realms/:realm/user-federation', {
             templateUrl : resourceUrl + '/partials/user-federation.html',
             resolve : {
@@ -2993,6 +3085,15 @@ module.directive('kcTabsLdap', function () {
         restrict: 'E',
         replace: true,
         templateUrl: resourceUrl + '/templates/kc-tabs-ldap.html'
+    }
+});
+
+module.directive('kcTabsDomainLdap', function () {
+    return {
+        scope: true,
+        restrict: 'E',
+        replace: true,
+        templateUrl: resourceUrl + '/templates/kc-tabs-domain-ldap.html'
     }
 });
 
