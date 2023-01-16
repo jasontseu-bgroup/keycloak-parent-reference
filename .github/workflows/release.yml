@@ -1,0 +1,75 @@
+name: Keycloak Release CI
+
+on: workflow_dispatch
+
+env:
+  DEFAULT_JDK_VERSION: 11
+
+concurrency:
+  # Only run once for latest commit per ref and cancel other (previous) runs.
+  group: ci-keycloak-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 6.0.x
+
+      - name: Set secrets
+        env:
+          VIDICONFIGFEED_USERNAME: ${{ secrets.VIDICONFIGFEED_USERNAME }}
+          VIDICONFIGFEED_PASSWORD: ${{ secrets.VIDICONFIGFEED_PASSWORD }}
+        run: |
+          sed -i "s/VIDICONFIGFEED_USERNAME/$VIDICONFIGFEED_USERNAME/g" ./.github/settings.xml;
+          sed -i "s/VIDICONFIGFEED_PASSWORD/$VIDICONFIGFEED_PASSWORD/g" ./.github/settings.xml;
+          cat ./.github/settings.xml
+
+      - uses: actions/setup-java@v1
+        with:
+          java-version: ${{ env.DEFAULT_JDK_VERSION }}
+
+      - name: Update maven settings
+        run: mkdir -p ~/.m2 ; cp .github/settings.xml ~/.m2/
+
+      - name: Cache Maven packages
+        id: cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.m2/repository
+          key: cache-1-${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: cache-1-${{ runner.os }}-m2
+
+      - name: Get Keycloak Version
+        run: |
+          wget https://github.com/GitTools/GitVersion/releases/download/5.10.3/gitversion-linux-x64-5.10.3.tar.gz
+          tar -xvzf gitversion-linux-x64-5.10.3.tar.gz
+          rm -rf gitversion-linux-x64-5.10.3.tar.gz
+          chmod +x ./gitversion
+          ./set-version.sh "$(./gitversion /output json /showvariable NuGetVersionV2)"
+
+      - name: Deploy Keycloak
+        run: |
+          mvn clean deploy -nsu -B -e -DskipTests -Pdistribution --fail-at-end
+
+      - name: Store Keycloak artifacts
+        id: store-keycloak
+        uses: actions/upload-artifact@v2
+        with:
+          name: keycloak-artifacts.zip
+          retention-days: 1
+          path: |
+            ~/.m2/repository/org/keycloak
+            !~/.m2/repository/org/keycloak/**/*.tar.gz
+
+      - name: Remove keycloak artifacts before caching
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: rm -rf ~/.m2/repository/org/keycloak

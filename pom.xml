@@ -35,11 +35,14 @@
     <packaging>pom</packaging>
 
     <properties>
+        <!--
         <jboss.repo.nexusUrl>https://s01.oss.sonatype.org/</jboss.repo.nexusUrl>
-        <jboss.releases.repo.id>jboss-releases-repository</jboss.releases.repo.id>
-        <jboss.releases.repo.url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</jboss.releases.repo.url>
-        <jboss.snapshots.repo.id>jboss-snapshots-repository</jboss.snapshots.repo.id>
-        <jboss.snapshots.repo.url>https://s01.oss.sonatype.org/content/repositories/snapshots/</jboss.snapshots.repo.url>
+        -->
+
+        <jboss.releases.repo.id>VidiConfigFeed</jboss.releases.repo.id>
+        <jboss.releases.repo.url>https://pkgs.dev.azure.com/arvato-systems-dmm/_packaging/VidiConfigFeed/maven/v1</jboss.releases.repo.url>
+        <jboss.snapshots.repo.id>VidiConfigSnapshotFeed</jboss.snapshots.repo.id>
+        <jboss.snapshots.repo.url>https://pkgs.dev.azure.com/arvato-systems-dmm/_packaging/VidiConfigSnapshotFeed/maven/v1</jboss.snapshots.repo.url>
 
         <quarkus.version>2.13.3.Final</quarkus.version>
 
