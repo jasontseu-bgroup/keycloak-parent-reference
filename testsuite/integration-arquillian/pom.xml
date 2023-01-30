@@ -626,6 +626,7 @@
     </profiles>
 
     <repositories>
+        <!--
         <repository>
             <id>sonatype-snapshots</id>
             <name>Sonatype Snapshots</name>
@@ -638,6 +639,7 @@
                 <enabled>false</enabled>
             </releases>
         </repository>
+        -->
     </repositories>
 
 </project>
