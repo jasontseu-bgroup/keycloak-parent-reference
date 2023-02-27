@@ -44,7 +44,7 @@
         <jboss.snapshots.repo.id>VidiConfigSnapshotFeed</jboss.snapshots.repo.id>
         <jboss.snapshots.repo.url>https://pkgs.dev.azure.com/arvato-systems-dmm/_packaging/VidiConfigSnapshotFeed/maven/v1</jboss.snapshots.repo.url>
 
-        <quarkus.version>2.13.6.Final</quarkus.version>
+        <quarkus.version>2.13.7.Final</quarkus.version>
 
         <project.build-time>${timestamp}</project.build-time>
 
@@ -123,6 +123,10 @@
         <google.guava.version>30.1-jre</google.guava.version>
         <xstream.version>1.4.20</xstream.version>
         <okhttp.version>4.10.0</okhttp.version>
+        <!-- Override of SnakeYAML to fix multiple CVEs -->
+        <org.yaml.snakeyaml.version>1.33</org.yaml.snakeyaml.version>
+        <!-- Override sshd-common to fix CVE-2022-45047 -->
+        <org.apache.sshd.version>2.9.2</org.apache.sshd.version>
 
         <!-- Openshift -->
         <version.com.openshift.openshift-restclient-java>9.0.5.Final</version.com.openshift.openshift-restclient-java>
@@ -292,11 +296,6 @@
                 <version>${xstream.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.yaml</groupId>
-                <artifactId>snakeyaml</artifactId>
-                <version>1.33</version>
-            </dependency>
-            <dependency>
                 <groupId>org.keycloak</groupId>
                 <artifactId>keycloak-dependencies-admin-ui-wrapper</artifactId>
                 <version>${project.version}</version>
@@ -311,6 +310,16 @@
                 <groupId>com.squareup.okhttp3</groupId>
                 <artifactId>logging-interceptor</artifactId>
                 <version>${okhttp.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.yaml</groupId>
+                <artifactId>snakeyaml</artifactId>
+                <version>${org.yaml.snakeyaml.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.sshd</groupId>
+                <artifactId>sshd-common</artifactId>
+                <version>${org.apache.sshd.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.jboss</groupId>
