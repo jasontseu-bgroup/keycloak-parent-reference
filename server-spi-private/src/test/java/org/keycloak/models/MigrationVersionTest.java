@@ -93,6 +93,19 @@ public class MigrationVersionTest {
         Assert.assertEquals(0, versionProduct.getMinor());
         Assert.assertEquals(0, versionProduct.getMicro());
         Assert.assertNull(versionProduct.getQualifier());
-    }
 
+        ModelVersion versionReleaseBuildNumber = new ModelVersion("18.0.2-release-0561");
+        Assert.assertEquals(18, versionReleaseBuildNumber.getMajor());
+        Assert.assertEquals(0, versionReleaseBuildNumber.getMinor());
+        Assert.assertEquals(2, versionReleaseBuildNumber.getMicro());
+        Assert.assertEquals(561, versionReleaseBuildNumber.getBuild());
+
+        ModelVersion version1802 = new ModelVersion("18.0.2");
+        ModelVersion version1802Beta1 = new ModelVersion("18.0.2.Beta1");
+        ModelVersion version1802SnapShot = new ModelVersion("18.0.2-SNAPSHOT");
+
+        Assert.assertTrue(version1802.lessThan(versionReleaseBuildNumber));
+        Assert.assertTrue(version1802Beta1.lessThan(versionReleaseBuildNumber));
+        Assert.assertTrue(version1802SnapShot.lessThan(versionReleaseBuildNumber));
+    }
 }

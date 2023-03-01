@@ -41,6 +41,8 @@ public class CachedGroup extends AbstractRevisioned implements InRealm {
     private final LazyLoader<GroupModel, MultivaluedHashMap<String, String>> attributes;
     private final LazyLoader<GroupModel, Set<String>> roleMappings;
     private final LazyLoader<GroupModel, Set<String>> subGroups;
+    private final LazyLoader<GroupModel, Set<String>> childGroupReference;
+    private final LazyLoader<GroupModel, Set<String>> parentGroupReference;
 
     public CachedGroup(Long revision, RealmModel realm, GroupModel group) {
         super(revision, group.getId());
@@ -50,6 +52,8 @@ public class CachedGroup extends AbstractRevisioned implements InRealm {
         this.attributes = new DefaultLazyLoader<>(source -> new MultivaluedHashMap<>(source.getAttributes()), MultivaluedHashMap::new);
         this.roleMappings = new DefaultLazyLoader<>(source -> source.getRoleMappingsStream().map(RoleModel::getId).collect(Collectors.toSet()), Collections::emptySet);
         this.subGroups = new DefaultLazyLoader<>(source -> source.getSubGroupsStream().map(GroupModel::getId).collect(Collectors.toSet()), Collections::emptySet);
+        this.childGroupReference = new DefaultLazyLoader<>(source -> source.getChildGroupsReference().stream().map(GroupModel::getId).collect(Collectors.toSet()), Collections::emptySet);
+        this.parentGroupReference = new DefaultLazyLoader<>(source -> source.getParentGroupsReference().stream().map(GroupModel::getId).collect(Collectors.toSet()), Collections::emptySet);
     }
 
     public String getRealm() {
@@ -79,4 +83,8 @@ public class CachedGroup extends AbstractRevisioned implements InRealm {
     public Set<String> getSubGroups(Supplier<GroupModel> group) {
         return subGroups.get(group);
     }
+
+    public Set<String> getChildGroupsReference(Supplier<GroupModel> group) { return childGroupReference.get(group); }
+
+    public Set<String> getParentGroupsReference(Supplier<GroupModel> group) { return parentGroupReference.get(group); }
 }

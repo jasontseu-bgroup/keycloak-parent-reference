@@ -17,11 +17,7 @@
 
 package org.keycloak.models.cache.infinispan;
 
-import org.keycloak.models.ClientModel;
-import org.keycloak.models.GroupModel;
-import org.keycloak.models.KeycloakSession;
-import org.keycloak.models.RealmModel;
-import org.keycloak.models.RoleModel;
+import org.keycloak.models.*;
 import org.keycloak.models.cache.infinispan.entities.CachedGroup;
 import org.keycloak.models.utils.RoleUtils;
 
@@ -261,5 +257,57 @@ public class GroupAdapter implements GroupModel {
 
     private GroupModel getGroupModel() {
         return cacheSession.getGroupDelegate().getGroupById(realm, cached.getId());
+    }
+
+    @Override
+    public Set<GroupModel> getParentGroupsReference() {
+        if (isUpdated()) return updated.getParentGroupsReference();
+        Set<GroupModel> parentGroupsReference = new HashSet<>();
+        for (String id : cached.getParentGroupsReference(modelSupplier)) {
+            GroupModel parentGroupReference = keycloakSession.groups().getGroupById(realm, id);
+            if (parentGroupReference == null) {
+                // chance that role was removed, so just delegate to persistence and get user invalidated
+                getDelegateForUpdate();
+                return updated.getParentGroupsReference();
+
+            }
+            parentGroupsReference.add(parentGroupReference);
+        }
+        return parentGroupsReference;
+    }
+
+    @Override
+    public Set<GroupModel> getChildGroupsReference() {
+        if (isUpdated()) return updated.getChildGroupsReference();
+        Set<GroupModel> childGroupsReference = new HashSet<>();
+        for (String id : cached.getChildGroupsReference(modelSupplier)) {
+            GroupModel childGroupReference = keycloakSession.groups().getGroupById(realm, id);
+            if (childGroupReference == null) {
+                // chance that role was removed, so just delegate to persistence and get user invalidated
+                getDelegateForUpdate();
+                return updated.getChildGroupsReference();
+
+            }
+            childGroupsReference.add(childGroupReference);
+        }
+        return childGroupsReference;
+    }
+
+    @Override
+    public void setParentGroupReference(GroupModel parent) {
+        getDelegateForUpdate();
+        updated.setParentGroupReference(parent);
+    }
+
+    @Override
+    public void setParentGroupsReference(Set<GroupModel> parents) {
+        getDelegateForUpdate();
+        updated.setParentGroupsReference(parents);
+    }
+
+    @Override
+    public void setChildGroupsReference(Set<GroupModel> parents) {
+        getDelegateForUpdate();
+        updated.setParentGroupsReference(parents);
     }
 }

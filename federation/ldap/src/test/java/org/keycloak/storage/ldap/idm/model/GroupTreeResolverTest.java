@@ -89,6 +89,27 @@ public class GroupTreeResolverTest {
     }
 
     @Test
+    public void testGroupResolvingMultipleParents() throws GroupTreeResolver.GroupTreeResolveException {
+        GroupTreeResolver.Group group1 = new GroupTreeResolver.Group("group1", "group2");
+        GroupTreeResolver.Group group2 = new GroupTreeResolver.Group("group2");
+        GroupTreeResolver.Group group3 = new GroupTreeResolver.Group("group3", "group2");
+        GroupTreeResolver.Group group4 = new GroupTreeResolver.Group("group4", "group1", "group5");
+        GroupTreeResolver.Group group5 = new GroupTreeResolver.Group("group5");
+        GroupTreeResolver.Group group6 = new GroupTreeResolver.Group("group6", "group4");
+        GroupTreeResolver.Group group7 = new GroupTreeResolver.Group("group7", "group4");
+        List<GroupTreeResolver.Group> groups = Arrays.asList(group1, group2, group3, group4, group5, group6, group7);
+
+        GroupTreeResolver resolver = new GroupTreeResolver();
+
+        List<GroupTreeResolver.GroupTreeEntry> groupTree = resolver.resolveGroupTree(groups, false);
+        Assert.assertEquals(3, groupTree.size());
+        Assert.assertEquals("{ group3 -> [ { group2 -> [  ]} ]}", groupTree.get(0).toString());
+        Assert.assertEquals("{ group6 -> [ { group4 -> [ { group1 -> [ { group2 -> [  ]} ]}{ group5 -> [  ]} ]} ]}", groupTree.get(1).toString());
+        Assert.assertEquals("{ group7 -> [ { group4 -> [ { group1 -> [ { group2 -> [  ]} ]}{ group5 -> [  ]} ]} ]}", groupTree.get(2).toString());
+    }
+
+/**
+    @Test
     public void testGroupResolvingMultipleParents() {
         GroupTreeResolver.Group group1 = new GroupTreeResolver.Group("group1", "group2");
         GroupTreeResolver.Group group2 = new GroupTreeResolver.Group("group2");
@@ -105,7 +126,7 @@ public class GroupTreeResolverTest {
             Assert.assertTrue(gre.getMessage().contains("detected to have multiple parents"));
         }
     }
-
+*/
 
     @Test
     public void testGroupResolvingMissingGroup() throws GroupTreeResolver.GroupTreeResolveException {

@@ -406,6 +406,8 @@ public class RefreshTokenTest extends AbstractKeycloakTest {
         }
     }
 
+
+
     /**
      * KEYCLOAK-15437
      */

@@ -20,8 +20,6 @@ package org.keycloak.models;
 import org.keycloak.provider.Provider;
 import org.keycloak.storage.group.GroupLookupProvider;
 
-import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -222,4 +220,8 @@ public interface GroupProvider extends Provider, GroupLookupProvider {
      * @throws ModelDuplicateException If there is already a top level group name with the same name
      */
     void addTopLevelGroup(RealmModel realm, GroupModel subGroup);
+
+    void addParentGroupReference(RealmModel realm, GroupModel group, GroupModel toParent);
+
+    void removeParentGroupReference(RealmModel realm, GroupModel group, GroupModel toParent);
 }

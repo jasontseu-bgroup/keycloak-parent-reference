@@ -111,6 +111,14 @@ public class HotRodGroupEntity extends AbstractHotRodEntity {
     @ProtoField(number = 7)
     public Set<String> grantedRoles;
 
+    @ProtoDoc("@Field(index = Index.YES, store = Store.YES)")
+    @ProtoField(number = 9)
+    public Set<HotRodGroupEntity> childGroupsReference;
+
+    @ProtoDoc("@Field(index = Index.YES, store = Store.YES)")
+    @ProtoField(number = 10)
+    public Set<HotRodGroupEntity> parentGroupsReference;
+
     @Override
     public boolean equals(Object o) {
         return HotRodGroupEntityDelegate.entityEquals(this, o);

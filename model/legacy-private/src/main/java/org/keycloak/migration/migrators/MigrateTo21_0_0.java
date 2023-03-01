@@ -25,7 +25,7 @@ public class MigrateTo21_0_0 implements Migration {
 
     private void updateAdminTheme(RealmModel realm) {
         String adminTheme = realm.getAdminTheme();
-        if ("keycloak".equals(adminTheme) || "rh-sso".equals(adminTheme)) {
+        if (adminTheme.equals("keycloak") || adminTheme.equals("rh-sso")) {
             realm.setAdminTheme("keycloak.v2");
         }
     }

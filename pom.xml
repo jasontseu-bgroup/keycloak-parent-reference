@@ -31,15 +31,18 @@
     </description>
     <groupId>org.keycloak</groupId>
     <artifactId>keycloak-parent</artifactId>
-    <version>999-SNAPSHOT</version>
+    <version>21.0.0</version>
     <packaging>pom</packaging>
 
     <properties>
+        <!--
         <jboss.repo.nexusUrl>https://s01.oss.sonatype.org/</jboss.repo.nexusUrl>
-        <jboss.releases.repo.id>jboss-releases-repository</jboss.releases.repo.id>
-        <jboss.releases.repo.url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</jboss.releases.repo.url>
-        <jboss.snapshots.repo.id>jboss-snapshots-repository</jboss.snapshots.repo.id>
-        <jboss.snapshots.repo.url>https://s01.oss.sonatype.org/content/repositories/snapshots/</jboss.snapshots.repo.url>
+        -->
+
+        <jboss.releases.repo.id>VidiConfigFeed</jboss.releases.repo.id>
+        <jboss.releases.repo.url>https://pkgs.dev.azure.com/arvato-systems-dmm/_packaging/VidiConfigFeed/maven/v1</jboss.releases.repo.url>
+        <jboss.snapshots.repo.id>VidiConfigSnapshotFeed</jboss.snapshots.repo.id>
+        <jboss.snapshots.repo.url>https://pkgs.dev.azure.com/arvato-systems-dmm/_packaging/VidiConfigSnapshotFeed/maven/v1</jboss.snapshots.repo.url>
 
         <quarkus.version>2.13.7.Final</quarkus.version>
 
@@ -56,7 +59,7 @@
         <jboss.as.version>7.2.0.Final</jboss.as.version>
         <jboss.as.subsystem.test.version>7.5.22.Final-redhat-1</jboss.as.subsystem.test.version>
 
-        <keycloak.admin-ui.version>${project.version}</keycloak.admin-ui.version>
+        <keycloak.admin-ui.version>999-SNAPSHOT</keycloak.admin-ui.version>
 
         <!-- Versions used mostly for Undertow server, aligned with WildFly -->
         <jboss.aesh.version>0.66.19</jboss.aesh.version>
@@ -246,6 +249,8 @@
         <url>https://github.com/keycloak/keycloak/tree/master/</url>
     </scm>
 
+<!--
+
     <distributionManagement>
         <repository>
             <id>${jboss.releases.repo.id}</id>
@@ -253,6 +258,7 @@
             <url>${jboss.releases.repo.url}</url>
         </repository>
     </distributionManagement>
+-->
 
     <issueManagement>
         <system>JIRA</system>
@@ -1794,6 +1800,7 @@
     <build>
         <pluginManagement>
             <plugins>
+                <!--
                 <plugin>
                     <groupId>org.sonatype.plugins</groupId>
                     <artifactId>nexus-staging-maven-plugin</artifactId>
@@ -1804,6 +1811,7 @@
                         <nexusUrl>${jboss.repo.nexusUrl}</nexusUrl>
                     </configuration>
                 </plugin>
+                -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-shade-plugin</artifactId>
@@ -2074,12 +2082,14 @@
         <profile>
             <id>nexus-staging</id>
             <build>
+                <!--
                 <plugins>
                     <plugin>
                         <groupId>org.sonatype.plugins</groupId>
                         <artifactId>nexus-staging-maven-plugin</artifactId>
                     </plugin>
                 </plugins>
+                -->
             </build>
         </profile>
 

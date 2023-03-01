@@ -25,11 +25,11 @@ import org.keycloak.events.admin.OperationType;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.RealmModel;
 import org.keycloak.services.ServicesLogger;
+import org.keycloak.storage.ldap.mappers.LDAPStorageSyncMapper;
 import org.keycloak.storage.managers.UserStorageSyncManager;
 import org.keycloak.services.resources.admin.permissions.AdminPermissionEvaluator;
 import org.keycloak.storage.UserStorageProvider;
 import org.keycloak.storage.UserStorageProviderModel;
-import org.keycloak.storage.ldap.LDAPStorageProvider;
 import org.keycloak.storage.ldap.mappers.LDAPStorageMapper;
 import org.keycloak.storage.user.SynchronizationResult;
 
@@ -215,7 +215,7 @@ public class UserStorageProviderResource {
     @Path("{parentId}/mappers/{id}/sync")
     @NoCache
     @Produces(MediaType.APPLICATION_JSON)
-    public SynchronizationResult syncMapperData(@PathParam("parentId") String parentId, @PathParam("id") String mapperId, @QueryParam("direction") String direction) {
+    public SynchronizationResult syncMapperData(@PathParam("parentId") String parentId, @PathParam("id") String mapperId, @QueryParam("direction") String direction) throws ClassNotFoundException {
         auth.users().requireManage();
 
         ComponentModel parentModel = realm.getComponent(parentId);
@@ -223,8 +223,13 @@ public class UserStorageProviderResource {
         ComponentModel mapperModel = realm.getComponent(mapperId);
         if (mapperModel == null) throw new NotFoundException("Mapper model not found");
 
-        LDAPStorageProvider ldapProvider = (LDAPStorageProvider) session.getProvider(UserStorageProvider.class, parentModel);
+        /*
+        LDAPStorageProvider ldapProvider = (LDAPStorageProvider)session.getProvider(UserStorageProvider.class, parentModel);
         LDAPStorageMapper mapper = session.getProvider(LDAPStorageMapper.class, mapperModel);
+        */
+
+        UserStorageProvider userStorageProvider = session.getProvider(UserStorageProvider.class, parentModel);
+        LDAPStorageSyncMapper mapper = (LDAPStorageSyncMapper)session.getProvider((Class)Class.forName(mapperModel.getProviderType()), mapperModel);
 
         ServicesLogger.LOGGER.syncingDataForMapper(mapperModel.getName(), mapperModel.getProviderId(), direction);
 

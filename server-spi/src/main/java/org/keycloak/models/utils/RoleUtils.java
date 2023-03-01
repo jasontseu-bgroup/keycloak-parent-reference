@@ -106,7 +106,15 @@ public class RoleUtils {
 
         if (checkParentGroup) {
             GroupModel parent = group.getParent();
-            return parent != null && hasRoleFromGroup(parent, targetRole, true);
+            boolean result = parent != null && hasRoleFromGroup(parent, targetRole, true);
+            if (result) {
+                return result;
+            } else {
+                Set<GroupModel> parentGroupsReference = group.getParentGroupsReference();
+                if (parentGroupsReference != null) {
+                    return parentGroupsReference.size() > 0 && hasRoleFromGroup(parentGroupsReference.stream(), targetRole, true);
+                }
+            }
         }
 
         return false;
@@ -197,6 +205,13 @@ public class RoleUtils {
 
     private static void addGroupRoles(GroupModel group, Set<RoleModel> roleMappings) {
         roleMappings.addAll(group.getRoleMappingsStream().collect(Collectors.toSet()));
+
+        if (group.getParentGroupsReference() != null) {
+            group.getParentGroupsReference().forEach(p -> {
+                addGroupRoles(p, roleMappings);
+            });
+        }
+
         if (group.getParentId() == null) return;
         addGroupRoles(group.getParent(), roleMappings);
     }

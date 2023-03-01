@@ -107,6 +107,7 @@ public class DBLockTest extends KeycloakModelTest {
     }
 
     @Test
+
     public void testLockConcurrentlyGeneral() throws Exception {
         inComittedTransaction(1, (session , i) -> {
             testLockConcurrentlyInternal(session, DBLockProvider.Namespace.DATABASE);
@@ -115,6 +116,7 @@ public class DBLockTest extends KeycloakModelTest {
     }
 
     @Test
+
     public void testLockConcurrentlyOffline() throws Exception {
         inComittedTransaction(1, (session , i) -> {
             testLockConcurrentlyInternal(session, DBLockProvider.Namespace.OFFLINE_SESSIONS);

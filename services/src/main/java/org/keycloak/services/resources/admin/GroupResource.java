@@ -52,6 +52,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -326,5 +327,25 @@ public class GroupResource {
         }
     }
 
+
+    @GET
+    @Path("parent-groups-reference")
+    @NoCache
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public List<String> getParentGroupsReference() {
+        this.auth.groups().requireManage(group);
+        return group.getParentGroupsReference().stream().map(x -> x.getId()).collect(Collectors.toList());
+    }
+
+    @GET
+    @Path("child-groups-reference")
+    @NoCache
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public List<String> getChildGroupsReference() {
+        this.auth.groups().requireManage(group);
+        return group.getChildGroupsReference().stream().map(x -> x.getId()).collect(Collectors.toList());
+    }
 }
 

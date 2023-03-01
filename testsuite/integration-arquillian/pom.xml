@@ -22,7 +22,7 @@
     <parent>
         <groupId>org.keycloak</groupId>
         <artifactId>keycloak-testsuite-pom</artifactId>
-        <version>999-SNAPSHOT</version>
+        <version>21.0.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     
@@ -654,6 +654,7 @@
     </profiles>
 
     <repositories>
+        <!--
         <repository>
             <id>sonatype-snapshots</id>
             <name>Sonatype Snapshots</name>
@@ -666,6 +667,7 @@
                 <enabled>false</enabled>
             </releases>
         </repository>
+        -->
     </repositories>
 
 </project>
