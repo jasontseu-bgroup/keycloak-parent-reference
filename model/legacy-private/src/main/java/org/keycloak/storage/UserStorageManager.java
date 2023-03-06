@@ -457,7 +457,7 @@ public class UserStorageManager extends AbstractStorageManager<UserStorageProvid
             }
             return 0;
         }
-        , realm, firstResult, maxResults);
+        , realm, firstResult, maxResults).distinct();
         return importValidation(realm, results);
     }
 
