@@ -42,6 +42,17 @@
                         <updatePolicy>interval:43200</updatePolicy>
                     </releases>
                 </repository>
+                <repository>
+                    <id>VidiConfigFeed</id>
+                    <name>VidiConfigFeed</name>
+                    <url>https://pkgs.dev.azure.com/arvato-systems-dmm/_packaging/VidiConfigFeed%40Local/maven/v1</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                </repository>
             </repositories>
         </profile>
     </profiles>
