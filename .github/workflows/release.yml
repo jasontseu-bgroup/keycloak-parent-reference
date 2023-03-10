@@ -28,9 +28,9 @@ jobs:
           VIDICONFIGFEED_USERNAME: ${{ secrets.VIDICONFIGFEED_USERNAME }}
           VIDICONFIGFEED_PASSWORD: ${{ secrets.VIDICONFIGFEED_PASSWORD }}
         run: |
-          sed -i "s/VIDICONFIGFEED_USERNAME/$VIDICONFIGFEED_USERNAME/g" ./.github/settings.xml;
-          sed -i "s/VIDICONFIGFEED_PASSWORD/$VIDICONFIGFEED_PASSWORD/g" ./.github/settings.xml;
-          cat ./.github/settings.xml
+          sed --debug -i "s/VIDICONFIGFEED_USERNAME/$VIDICONFIGFEED_USERNAME/g" .github/settings.xml;
+          sed --debug -i "s/VIDICONFIGFEED_PASSWORD/$VIDICONFIGFEED_PASSWORD/g" .github/settings.xml;
+          cat .github/settings.xml
 
       - uses: actions/setup-java@v1
         with:
