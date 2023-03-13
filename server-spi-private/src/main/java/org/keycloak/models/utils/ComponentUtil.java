@@ -62,8 +62,10 @@ public class ComponentUtil {
             ComponentFactory componentFactory = getComponentFactory(session, providerType, providerId);
             List<ProviderConfigProperty> l = componentFactory.getConfigProperties();
             Map<String, ProviderConfigProperty> properties = new HashMap<>();
-            for (ProviderConfigProperty p : l) {
-                properties.put(p.getName(), p);
+            if (l != null) {
+                for (ProviderConfigProperty p : l) {
+                    properties.put(p.getName(), p);
+                }
             }
             List<ProviderConfigProperty> common = componentFactory.getCommonProviderConfigProperties();
             for (ProviderConfigProperty p : common) {
