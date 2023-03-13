@@ -31,4 +31,30 @@
     <addUniqueConstraint columnNames="REALM_ID,PARENT_GROUP,NAME" constraintName="SIBLING_NAMES" tableName="KEYCLOAK_GROUP"/>
   </changeSet>
 
+  <changeSet author="vidiconfig" id="vidiconfig-2.0.0-4">
+    <dropForeignKeyConstraint
+      baseTableName="KEYCLOAK_GROUP_GROUP"
+      constraintName="FK_keycloak_group_group_parent_group"/>
+
+    <dropForeignKeyConstraint
+      baseTableName="KEYCLOAK_GROUP_GROUP"
+      constraintName="FK_keycloak_group_group_child_group"/>
+
+    <addForeignKeyConstraint
+      baseTableName="KEYCLOAK_GROUP_GROUP"
+      baseColumnNames="PARENT_GROUP"
+      constraintName="FK_keycloak_group_group_parent_group"
+      referencedTableName="KEYCLOAK_GROUP"
+      referencedColumnNames="id"
+      onDelete="CASCADE"/>
+
+    <addForeignKeyConstraint
+      baseTableName="KEYCLOAK_GROUP_GROUP"
+      baseColumnNames="CHILD_GROUP"
+      constraintName="FK_keycloak_group_group_child_group"
+      referencedTableName="KEYCLOAK_GROUP"
+      referencedColumnNames="id"
+      onDelete="CASCADE"/>
+  </changeSet>
+
 </databaseChangeLog>
