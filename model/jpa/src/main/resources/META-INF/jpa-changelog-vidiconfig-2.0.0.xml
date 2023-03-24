@@ -57,4 +57,13 @@
       onDelete="CASCADE"/>
   </changeSet>
 
+  <changeSet author="vidiconfig" id="vidiconfig-2.0.0-5">
+    <update tableName="KEYCLOAK_GROUP">
+      <column name="PARENT_GROUP" type="VARCHAR(36)" value=" " />
+      <where>PARENT_GROUP is NULL</where>
+    </update>
+
+    <addNotNullConstraint tableName="KEYCLOAK_GROUP" columnName="PARENT_GROUP" columnDataType="VARCHAR(36)" defaultNullValue=" "/>
+  </changeSet>
+
 </databaseChangeLog>
