@@ -283,7 +283,9 @@ public class GroupAdapter implements GroupModel, JpaModel<GroupEntity> {
         } else if (!parent.getId().equals(getId())) {
             GroupEntity parentEntity = toEntity(parent, em);
             group.getParentGroupsReference().add(parentEntity);
+            parentEntity.getChildGroupsReference().add(group);
             em.persist(group);
+            em.persist(parentEntity);
         }
 
         em.flush();
@@ -311,7 +313,9 @@ public class GroupAdapter implements GroupModel, JpaModel<GroupEntity> {
             } else if (!child.getId().equals(getId())) {
                 GroupEntity childEntity = toEntity(child, em);
                 group.getChildGroupsReference().add(childEntity);
+                childEntity.getParentGroupsReference().add(group);
                 em.persist(group);
+                em.persist(childEntity);
             }
         });
 
